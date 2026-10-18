@@ -1,0 +1,247 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Admin Dashboard Overview — Bitetech Technologies{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1 d-flex align-items-center gap-2">
+      <i class="bi bi-speedometer2 text-cyan-glow"></i> Administrative Dashboard
+    </h2>
+    <p class="text-light-silver small mb-0">Live statistics, database metrics, project catalogue status, and incoming customer leads.</p>
+  </div>
+
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <a href="{{ url_for('admin.enquiries_export') }}" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1">
+      <i class="bi bi-file-earmark-spreadsheet"></i> Export Enquiries (CSV)
+    </a>
+    <a href="{{ url_for('admin.project_new') }}" class="btn btn-sm btn-primary d-flex align-items-center gap-1">
+      <i class="bi bi-plus-circle"></i> Add Project
+    </a>
+    <a href="{{ url_for('admin.service_new') }}" class="btn btn-sm btn-info text-white d-flex align-items-center gap-1">
+      <i class="bi bi-plus-circle"></i> Add Service
+    </a>
+    <a href="{{ url_for('admin.course_new') }}" class="btn btn-sm btn-purple d-flex align-items-center gap-1">
+      <i class="bi bi-plus-circle"></i> Add Course
+    </a>
+  </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+  <!-- Total Enquiries -->
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card h-100">
+      <div class="stat-icon primary">
+        <i class="bi bi-inbox-fill"></i>
+      </div>
+      <div class="stat-details">
+        <h4 class="text-white">{{ total_enquiries }}</h4>
+        <p>Total Leads & Enquiries</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Enquiries -->
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card h-100">
+      <div class="stat-icon warning">
+        <i class="bi bi-bell-fill"></i>
+      </div>
+      <div class="stat-details">
+        <h4 class="text-warning">{{ new_enquiries }}</h4>
+        <p>New / Pending Action</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects Breakdown -->
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card h-100">
+      <div class="stat-icon success">
+        <i class="bi bi-grid-fill"></i>
+      </div>
+      <div class="stat-details">
+        <h4 class="text-white">{{ total_projects }}</h4>
+        <p>{{ mini_projects_count }} Mini (₹599) &bull; {{ major_projects_count }} Major (₹1k)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services & Customers -->
+  <div class="col-xl-3 col-sm-6">
+    <div class="stat-card h-100">
+      <div class="stat-icon info">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="stat-details">
+        <h4 class="text-white">{{ total_customers }}</h4>
+        <p>Registered Customers & Students</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Breakdown Banner (Obsidian Dark Cards) -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-breakdown-card p-3 rounded-3 d-flex justify-content-between align-items-center h-100">
+      <div>
+        <div class="stat-breakdown-label">Website Services</div>
+        <div class="fw-bold fs-5 text-white">{{ total_services }} Active Packages</div>
+      </div>
+      <a href="{{ url_for('admin.services') }}" class="btn btn-sm btn-outline-primary">Manage</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-breakdown-card p-3 rounded-3 d-flex justify-content-between align-items-center h-100">
+      <div>
+        <div class="stat-breakdown-label">Online Classes</div>
+        <div class="fw-bold fs-5 text-white">{{ total_courses }} Available Courses</div>
+      </div>
+      <a href="{{ url_for('admin.courses') }}" class="btn btn-sm btn-outline-purple">Manage</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-breakdown-card p-3 rounded-3 d-flex justify-content-between align-items-center h-100">
+      <div>
+        <div class="stat-breakdown-label">Customer Accounts</div>
+        <div class="fw-bold fs-5 text-white">{{ total_customers }} Users</div>
+      </div>
+      <a href="{{ url_for('admin.customers') }}" class="btn btn-sm btn-outline-info">View Users</a>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Leads & Enquiries Section -->
+<div class="row g-4 mb-4">
+  <!-- Recent Project Enquiries -->
+  <div class="col-lg-6">
+    <div class="admin-card h-100 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white mb-0"><i class="bi bi-kanban text-primary me-2"></i>Recent Project Enquiries</h5>
+        <a href="{{ url_for('admin.enquiries', type='projects') }}" class="small fw-semibold text-cyan-glow text-decoration-none">View All &rarr;</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle small">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Project / Scope</th>
+              <th>Budget</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in recent_project_enquiries %}
+              <tr>
+                <td>
+                  <div class="fw-bold text-white">{{ p.client_name }}</div>
+                  <div class="text-light-silver small">{{ p.client_phone }}</div>
+                </td>
+                <td>
+                  <div class="text-truncate text-white" style="max-width: 160px;">
+                    {{ p.project.title if p.project else p.project_type }}
+                  </div>
+                </td>
+                <td class="text-nowrap"><span class="badge badge-dark-pill">{{ p.budget_range }}</span></td>
+                <td class="text-nowrap">
+                  <span class="badge {% if p.status == 'New' %}bg-warning text-dark{% elif p.status == 'Completed' %}bg-success{% else %}bg-primary{% endif %}">
+                    {{ p.status }}
+                  </span>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="4" class="text-light-silver text-center py-3">No project enquiries yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Service Quotation Requests -->
+  <div class="col-lg-6">
+    <div class="admin-card h-100 p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white mb-0"><i class="bi bi-window-sidebar text-info me-2"></i>Recent Service Quotes</h5>
+        <a href="{{ url_for('admin.enquiries', type='services') }}" class="small fw-semibold text-cyan-glow text-decoration-none">View All &rarr;</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle small">
+          <thead class="table-dark-header">
+            <tr>
+              <th>Client</th>
+              <th>Project Title</th>
+              <th>Budget</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in recent_service_enquiries %}
+              <tr>
+                <td>
+                  <div class="fw-bold text-white">{{ s.client_name }}</div>
+                  <div class="text-light-silver small">{{ s.client_phone }}</div>
+                </td>
+                <td>
+                  <div class="text-truncate text-white" style="max-width: 160px;">
+                    {{ s.project_title }}
+                  </div>
+                </td>
+                <td class="text-nowrap"><span class="badge badge-dark-pill">{{ s.budget_range }}</span></td>
+                <td class="text-nowrap">
+                  <span class="badge {% if s.status == 'New' %}bg-warning text-dark{% elif s.status == 'Completed' %}bg-success{% else %}bg-info text-dark{% endif %}">
+                    {{ s.status }}
+                  </span>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="4" class="text-light-silver text-center py-3">No service quotation requests yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Security Audit Activity -->
+<div class="admin-card p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold text-white mb-0"><i class="bi bi-shield-shaded text-danger me-2"></i>Recent Security Audit Events</h5>
+    <a href="{{ url_for('admin.audit_logs') }}" class="small fw-semibold text-cyan-glow text-decoration-none">View Full Audit Log &rarr;</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle small">
+      <thead class="table-dark-header">
+        <tr>
+          <th>Timestamp (UTC)</th>
+          <th>Action</th>
+          <th>User</th>
+          <th>IP Address</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in recent_logs %}
+          <tr>
+            <td class="text-light-silver">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td><code class="text-cyan-glow bg-dark px-2 py-1 rounded border border-secondary border-opacity-25">{{ log.action }}</code></td>
+            <td class="text-white">{{ log.username or 'Anonymous' }}</td>
+            <td class="font-monospace text-light-silver">{{ log.ip_address }}</td>
+            <td>
+              <span class="badge {% if log.status == 'SUCCESS' %}bg-success{% elif log.status == 'WARNING' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                {{ log.status }}
+              </span>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="text-light-silver text-center py-3">No recent security events recorded.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

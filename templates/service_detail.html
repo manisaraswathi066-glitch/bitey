@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ service.title }} — Bitetech Technologies{% endblock %}
+
+{% block meta_description %}{{ service.short_description }}{% endblock %}
+
+{% block content %}
+<!-- Service Header -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.services') }}" class="text-decoration-none">Services</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ service.title }}</li>
+      </ol>
+    </nav>
+
+    <div class="row align-items-center justify-content-between g-4">
+      <div class="col-lg-8">
+        <span class="badge-price mb-2 d-inline-block">Starting from {{ service.starting_price }}</span>
+        <h1 class="fw-bold mb-2">{{ service.title }}</h1>
+        <p class="lead text-muted mb-0">
+          {{ service.short_description }}
+        </p>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <div class="p-3 bg-light rounded-4 border d-inline-block text-start">
+          <div class="small text-muted mb-1">Starting Baseline Price:</div>
+          <div class="fs-2 fw-bold text-dark">{{ service.starting_price }}</div>
+          <div class="small text-secondary mb-2"><i class="bi bi-clock-history me-1"></i> Timeline: {{ service.timeline }}</div>
+          <a href="#quote-form-section" class="btn btn-primary btn-sm w-100">
+            <i class="bi bi-send-fill me-1"></i> Request Exact Quotation
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Service Specifications -->
+<section class="py-5">
+  <div class="container py-4">
+    <div class="row g-5">
+      <!-- Main Content Details -->
+      <div class="col-lg-7">
+        <!-- Overview & Description -->
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+          <h4 class="fw-bold mb-3">Service Scope & Description</h4>
+          <div class="text-secondary" style="line-height: 1.8;">
+            {{ service.full_description | safe }}
+          </div>
+        </div>
+
+        <!-- Features Included -->
+        {% if service.feature_list() %}
+          <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i> Features Included</h4>
+            <div class="row g-3">
+              {% for feat in service.feature_list() %}
+                <div class="col-md-6">
+                  <div class="p-3 bg-light rounded-3 border h-100 d-flex align-items-start gap-2">
+                    <i class="bi bi-check2 text-primary fs-5 mt-n1"></i>
+                    <span class="small text-dark fw-medium">{{ feat }}</span>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Expected Deliverables -->
+        {% if service.deliverable_list() %}
+          <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-box-seam-fill text-primary me-2"></i> Expected Deliverables</h4>
+            <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+              {% for deliv in service.deliverable_list() %}
+                <li class="d-flex align-items-start gap-2 small text-secondary">
+                  <i class="bi bi-check-lg text-success fs-5 mt-n1"></i>
+                  <span>{{ deliv }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <!-- Transparent Hosting, Domain & Renewal Terms Card -->
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-shield-check text-success fs-3"></i>
+            <h4 class="fw-bold mb-0">Hosting, Domain & Renewal Transparency</h4>
+          </div>
+          <p class="text-muted small mb-4">
+            Bitetech Technologies provides upfront disclosure for all ongoing server and domain obligations. No hidden recurring fees.
+          </p>
+
+          <div class="table-responsive">
+            <table class="table table-bordered small">
+              <tbody>
+                <tr>
+                  <th class="table-light" style="width: 35%;">Hosting Duration</th>
+                  <td>{{ service.hosting_duration or 'Configured per package agreement (e.g. 1 Year included or not included)' }}</td>
+                </tr>
+                <tr>
+                  <th class="table-light">Domain Registration</th>
+                  <td>{{ service.domain_included or 'Client-provided or standard .com/.in included where specified' }}</td>
+                </tr>
+                <tr>
+                  <th class="table-light">Subsequent Renewal Cost</th>
+                  <td>{{ service.renewal_cost or 'Billed annually based on chosen hosting infrastructure (estimated ₹2,500/year)' }}</td>
+                </tr>
+                <tr>
+                  <th class="table-light">Additional Services / Add-ons</th>
+                  <td>{{ service.additional_charges or 'Payment gateways, e-commerce checkouts, and custom APIs quoted separately' }}</td>
+                </tr>
+                <tr>
+                  <th class="table-light">Final Quotation Approval</th>
+                  <td class="text-success fw-semibold">Final quotation is provided in writing based on your approved technical requirements.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Quotation Enquiry Form -->
+      <div class="col-lg-5" id="quote-form-section">
+        <div class="p-4 p-md-5 rounded-4 bg-white border shadow-sm sticky-top" style="top: 90px;">
+          <div class="text-center mb-4">
+            <span class="badge-price mb-2 d-inline-block">Transparent Upfront Quote</span>
+            <h4 class="fw-bold">Request a Custom Proposal</h4>
+            <p class="text-muted small mb-0">
+              Submit your requirements for <strong>{{ service.title }}</strong>. We will review and provide a confirmed timeline and fixed price.
+            </p>
+          </div>
+
+          <form action="{{ url_for('main.service_detail', slug=service.slug) }}" method="POST">
+            {{ form.csrf_token }}
+            {{ form.service_id() }}
+
+            <div style="display:none;">
+              {{ form.website_hp() }}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Your Full Name <span class="text-danger">*</span></label>
+              {{ form.client_name(class="form-control", placeholder="e.g. Rahul Gupta") }}
+              {% for err in form.client_name.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
+              {{ form.client_email(class="form-control", placeholder="rahul@example.com") }}
+              {% for err in form.client_email.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">WhatsApp / Phone Number <span class="text-danger">*</span></label>
+              {{ form.client_phone(class="form-control", placeholder="e.g. 7418332912") }}
+              {% for err in form.client_phone.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Project / Business Name <span class="text-danger">*</span></label>
+              {{ form.project_title(class="form-control", placeholder="e.g. Gupta Retail Store Website") }}
+              {% for err in form.project_title.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Budget Range</label>
+                {{ form.budget_range(class="form-select small") }}
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Target Timeline</label>
+                {{ form.target_timeline(class="form-control small", placeholder="e.g. 1-2 Weeks") }}
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label small fw-semibold">Detailed Requirements & Features <span class="text-danger">*</span></label>
+              {{ form.project_requirements(class="form-control", rows=4, placeholder="List required pages, features (WhatsApp order button, product gallery, contact form), and any hosting preferences...") }}
+              {% for err in form.project_requirements.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-primary py-2 fw-semibold" id="btn-service-enquiry-submit">
+                <i class="bi bi-file-earmark-check me-1"></i> Submit Quotation Request
+              </button>
+            </div>
+          </form>
+
+          <div class="pt-3 border-top text-center">
+            <span class="small text-muted d-block mb-2">Prefer instant discussion?</span>
+            <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20would%20like%20a%20quotation%20for%20{{ service.title|urlencode }}." 
+               class="btn btn-sm btn-whatsapp w-100" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp"></i> Chat on WhatsApp (+91 {{ site_settings.company_phone }})
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

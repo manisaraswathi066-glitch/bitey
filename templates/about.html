@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us — Bitetech Technologies{% endblock %}
+
+{% block meta_description %}Learn about Bitetech Technologies, our engineering principles, mission, and transparent approach to Python project development and programming education.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <span class="badge-price mb-2 d-inline-block">About Bitetech Technologies</span>
+        <h1 class="fw-bold mb-3">Dedicated to Practical Python Engineering</h1>
+        <p class="lead text-muted mb-0">
+          We bridge the gap between academic theory and real-world software by creating well-architected Python projects and delivering transparent, mentor-led programming education.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Company Overview & Philosophy -->
+<section class="py-5">
+  <div class="container py-4">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <h2 class="fw-bold mb-3">Who We Are</h2>
+        <p class="text-muted">
+          {{ about_text if about_text else 'Bitetech Technologies is an independent software development and technical mentoring initiative focused on Python engineering. We bridge the gap between theoretical syntax and working software by building clean, maintainable Python applications and teaching students how to architect real projects from scratch.' }}
+        </p>
+        <p class="text-muted">
+          Whether you need a well-commented academic mini-project starting at ₹599, a full-stack Flask web application backed by MySQL, or personalized mentoring to conquer Object-Oriented Programming, Bitetech Technologies delivers verifiable code and transparent support.
+        </p>
+
+        <div class="p-3 bg-white rounded-3 border mt-4">
+          <div class="d-flex align-items-center gap-3">
+            <div class="brand-icon-box flex-shrink-0">
+              <i class="bi bi-shield-check"></i>
+            </div>
+            <div>
+              <h6 class="fw-bold mb-1">Our Core Commitment</h6>
+              <p class="small text-muted mb-0">
+                We believe in genuine engineering capability over superficial marketing. Every project includes verified source code, structured documentation, and complete setup instructions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="p-4 bg-white rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-primary">
+                <i class="bi bi-bullseye fs-4"></i>
+                <h4 class="fw-bold mb-0 text-dark">Our Mission</h4>
+              </div>
+              <p class="text-muted mb-0">
+                {{ mission_text if mission_text else 'To make software engineering accessible, practical, and transparent by delivering well-structured Python projects at affordable pricing and empowering learners with real coding confidence.' }}
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="p-4 bg-white rounded-4 border shadow-sm">
+              <div class="d-flex align-items-center gap-2 mb-2 text-primary">
+                <i class="bi bi-eye fs-4"></i>
+                <h4 class="fw-bold mb-0 text-dark">Our Vision</h4>
+              </div>
+              <p class="text-muted mb-0">
+                {{ vision_text if vision_text else 'To become a trusted technical partner for learners and organizations seeking robust Python automation, clean web applications, and practical programming education.' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Our Guiding Values -->
+<section class="py-5 bg-white border-top border-bottom">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="badge-price mb-2 d-inline-block">Engineering Principles</span>
+      <h2 class="fw-bold">What Guides Our Work</h2>
+      <p class="text-muted mx-auto" style="max-width: 600px;">
+        Core principles that every project and programming class is built upon.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="premium-card">
+          <div class="card-icon-box">
+            <i class="bi bi-code-slash"></i>
+          </div>
+          <h5 class="fw-bold mb-2">Clean, Modular Architecture</h5>
+          <p class="text-muted small mb-0">
+            We write clean, readable, PEP 8-compliant Python code. We avoid unnecessary complexity and ensure every function, route, and database query is easy to understand and extend.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="premium-card">
+          <div class="card-icon-box">
+            <i class="bi bi-currency-rupee"></i>
+          </div>
+          <h5 class="fw-bold mb-2">Transparent, Honest Pricing</h5>
+          <p class="text-muted small mb-0">
+            Our standard Python mini-projects start at just ₹599. We provide upfront scope estimates without hidden surprise costs, allowing students and small creators to plan confidently.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="premium-card">
+          <div class="card-icon-box">
+            <i class="bi bi-lightbulb"></i>
+          </div>
+          <h5 class="fw-bold mb-2">Education Through Real Building</h5>
+          <p class="text-muted small mb-0">
+            We teach programming through practical project development. Rather than passive video lectures, our students write code, debug real stack traces, and build complete software portfolios.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Technical Competency -->
+<section class="py-5">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="badge-price mb-2 d-inline-block">Our Technical Stack</span>
+      <h2 class="fw-bold">Technologies We Work With</h2>
+      <p class="text-muted mx-auto" style="max-width: 600px;">
+        Battle-tested tools and libraries that ensure reliability and compatibility.
+      </p>
+    </div>
+
+    <div class="row g-4 text-center justify-content-center">
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="p-3 bg-white rounded-3 border h-100 shadow-sm">
+          <i class="bi bi-filetype-py fs-1 text-primary mb-2 d-block"></i>
+          <h6 class="fw-bold mb-1">Python 3.13</h6>
+          <span class="small text-muted">Core Language</span>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="p-3 bg-white rounded-3 border h-100 shadow-sm">
+          <i class="bi bi-window-sidebar fs-1 text-info mb-2 d-block"></i>
+          <h6 class="fw-bold mb-1">Flask</h6>
+          <span class="small text-muted">Web Framework</span>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="p-3 bg-white rounded-3 border h-100 shadow-sm">
+          <i class="bi bi-database fs-1 text-warning mb-2 d-block"></i>
+          <h6 class="fw-bold mb-1">MySQL / WAMP</h6>
+          <span class="small text-muted">Relational Storage</span>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="p-3 bg-white rounded-3 border h-100 shadow-sm">
+          <i class="bi bi-layers fs-1 text-success mb-2 d-block"></i>
+          <h6 class="fw-bold mb-1">SQLAlchemy</h6>
+          <span class="small text-muted">ORM & Modeling</span>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="p-3 bg-white rounded-3 border h-100 shadow-sm">
+          <i class="bi bi-bootstrap fs-1 text-purple-vibrant mb-2 d-block"></i>
+          <h6 class="fw-bold mb-1">Bootstrap 5</h6>
+          <span class="small text-muted">Responsive UI</span>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="p-3 bg-white rounded-3 border h-100 shadow-sm">
+          <i class="bi bi-shield-lock fs-1 text-danger mb-2 d-block"></i>
+          <h6 class="fw-bold mb-1">Flask-WTF</h6>
+          <span class="small text-muted">CSRF & Security</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Direct Contact Banner -->
+<section class="py-5 bg-navy-deep text-white" style="background-color: #0B192C;">
+  <div class="container py-4 text-center">
+    <h2 class="fw-bold text-white mb-3">Speak with Bitetech Technologies</h2>
+    <p class="text-light opacity-75 mx-auto mb-4" style="max-width: 600px;">
+      Have questions about our project services, online class syllabus, or starting price? Connect with our team directly via email or WhatsApp.
+    </p>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+      <a href="mailto:{{ site_settings.company_email }}" class="btn btn-outline-light">
+        <i class="bi bi-envelope"></i> {{ site_settings.company_email }}
+      </a>
+      <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies" class="btn btn-whatsapp" target="_blank" rel="noopener">
+        <i class="bi bi-whatsapp"></i> WhatsApp: +91 {{ site_settings.company_phone }}
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Instance and SQLite database files
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables (keep secrets out of git)
+.env
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# CSV exports / temporary logs
+*.log
+bitetech_enquiries_*.csv
+backups/
+.agents/
+skills-lock.json
+

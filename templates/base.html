@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Bitetech Technologies — Python Development Projects & Online Programming Classes{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Bitetech Technologies provides custom Python project development starting from ₹599, major projects from ₹1,000, website development from ₹5,000, and mentor-led online programming classes.{% endblock %}">
+  
+  <!-- Modern High-End Typography Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap 5 & Bootstrap Icons -->
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  
+  <!-- Favicon & Touch Icons -->
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/bitetech_emblem.png') }}">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- Main Navigation Header -->
+  <header class="sticky-top site-header-wrapper">
+    <nav class="navbar site-navbar py-2" aria-label="Main Navigation">
+      <div class="container d-flex align-items-center justify-content-between">
+        <!-- Official Bitetech Logo with 3D Arrow Emblem -->
+        <a class="navbar-brand brand-logo-wrap m-0" href="{{ url_for('main.index') }}" id="nav-brand">
+          <div class="brand-emblem-box">
+            <img src="{{ url_for('static', filename='images/bitetech_emblem.png') }}" alt="Bitetech Technologies Logo" class="brand-emblem-img">
+          </div>
+          <div class="brand-text-block">
+            <div class="brand-title">BITE<span class="brand-title-accent">TECH</span></div>
+            <div class="brand-subtitle">TECHNOLOGIES</div>
+          </div>
+        </a>
+
+        <!-- Header Actions: Quote CTA, User Auth & 3-Dash Menu Button -->
+        <div class="d-flex align-items-center gap-2 gap-sm-3">
+          <!-- Request Quote Button -->
+          <a href="{{ url_for('main.contact') }}" class="btn btn-primary btn-sm nav-btn-cta d-none d-sm-inline-flex" id="btn-request-project">
+            <i class="bi bi-send-fill me-1"></i> Request Quote
+          </a>
+
+          <!-- User Authentication Dropdown / Sign In -->
+          {% if current_user.is_authenticated %}
+            <div class="dropdown d-none d-md-block">
+              <button class="btn btn-nav-secondary btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle fs-5 text-primary"></i>
+                <span>{{ current_user.full_name or current_user.username }}</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="userMenuBtn">
+                {% if current_user.is_admin %}
+                  <li><h6 class="dropdown-header text-uppercase small text-muted">Administrator</h6></li>
+                  <li><a class="dropdown-item py-2" href="{{ url_for('admin.dashboard') }}"><i class="bi bi-speedometer2 text-primary me-2"></i> Admin Dashboard</a></li>
+                  <li><a class="dropdown-item py-2" href="{{ url_for('admin.enquiries') }}"><i class="bi bi-envelope-paper text-primary me-2"></i> Manage Enquiries</a></li>
+                  <li><a class="dropdown-item py-2" href="{{ url_for('admin.projects') }}"><i class="bi bi-kanban text-primary me-2"></i> Manage Projects</a></li>
+                  <li><a class="dropdown-item py-2" href="{{ url_for('admin.services') }}"><i class="bi bi-window-sidebar text-primary me-2"></i> Manage Services</a></li>
+                  <li><a class="dropdown-item py-2" href="{{ url_for('admin.courses') }}"><i class="bi bi-mortarboard text-primary me-2"></i> Manage Courses</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                {% endif %}
+                <li><h6 class="dropdown-header text-uppercase small text-muted">My Account</h6></li>
+                <li><a class="dropdown-item py-2" href="{{ url_for('main.dashboard') }}"><i class="bi bi-grid-1x2-fill text-primary me-2"></i> Customer Dashboard</a></li>
+                <li><a class="dropdown-item py-2" href="{{ url_for('main.logout') }}"><i class="bi bi-box-arrow-right text-danger me-2"></i> Sign Out</a></li>
+              </ul>
+            </div>
+          {% else %}
+            <a href="{{ url_for('main.login') }}" class="btn btn-nav-secondary btn-sm d-none d-md-inline-flex" id="nav-login-btn">
+              <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </a>
+          {% endif %}
+
+          <!-- Prominent 3-Dash Menu Button -->
+          <button class="btn-hamburger-menu" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenuOffcanvas" aria-controls="siteMenuOffcanvas" aria-label="Open Navigation Menu" id="navbar-toggle-btn">
+            <span class="hamburger-dash-box" aria-hidden="true">
+              <span class="hamburger-dash dash-1"></span>
+              <span class="hamburger-dash dash-2"></span>
+              <span class="hamburger-dash dash-3"></span>
+            </span>
+            <span class="hamburger-text">Menu</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- 3-Dash Offcanvas Sliding Drawer -->
+  <div class="offcanvas offcanvas-end offcanvas-dark" tabindex="-1" id="siteMenuOffcanvas" aria-labelledby="siteMenuOffcanvasLabel">
+    <div class="offcanvas-header d-flex align-items-center justify-content-between">
+      <div class="brand-logo-wrap" id="siteMenuOffcanvasLabel">
+        <div class="brand-emblem-box" style="width: 38px; height: 38px;">
+          <img src="{{ url_for('static', filename='images/bitetech_emblem.png') }}" alt="Bitetech Logo" class="brand-emblem-img">
+        </div>
+        <div class="brand-text-block">
+          <div class="brand-title" style="font-size: 1.15rem;">BITE<span class="brand-title-accent">TECH</span></div>
+          <div class="brand-subtitle" style="font-size: 0.58rem;">NAVIGATION MENU</div>
+        </div>
+      </div>
+      <button type="button" class="btn-close-offcanvas" data-bs-dismiss="offcanvas" aria-label="Close menu">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column justify-content-between p-3 p-md-4">
+      <div>
+        <div class="menu-section-label">MAIN NAVIGATION</div>
+        <ul class="offcanvas-nav-list mb-4">
+          <!-- Home -->
+          <li class="offcanvas-nav-item">
+            <a class="offcanvas-nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" href="{{ url_for('main.index') }}" id="nav-home">
+              <span class="d-flex align-items-center gap-3">
+                <i class="bi bi-house-door-fill text-primary fs-5"></i>
+                <span>Home</span>
+              </span>
+              <i class="bi bi-chevron-right text-muted small"></i>
+            </a>
+          </li>
+
+          <!-- Python Projects (Expandable) -->
+          <li class="offcanvas-nav-item">
+            <div class="w-100">
+              <button class="offcanvas-nav-link w-100 text-start {% if 'project' in request.endpoint %}active{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#offcanvasProjectsSubmenu" aria-expanded="{% if 'project' in request.endpoint %}true{% else %}false{% endif %}" aria-controls="offcanvasProjectsSubmenu" id="projectsDropdown">
+                <span class="d-flex align-items-center gap-3">
+                  <i class="bi bi-code-slash text-cyan-glow fs-5"></i>
+                  <span>Python Projects</span>
+                </span>
+                <i class="bi bi-chevron-down text-muted small offcanvas-caret"></i>
+              </button>
+              <div class="collapse {% if 'project' in request.endpoint %}show{% endif %} offcanvas-submenu ps-3 pt-2" id="offcanvasProjectsSubmenu">
+                <a class="offcanvas-sublink" href="{{ url_for('main.projects') }}">
+                  <i class="bi bi-grid-fill text-primary me-2"></i> All Projects Catalog
+                </a>
+                <a class="offcanvas-sublink" href="{{ url_for('main.projects', type='Mini') }}">
+                  <i class="bi bi-code-slash text-success me-2"></i> Python Mini Projects <span class="badge bg-success-subtle text-success ms-auto">₹599</span>
+                </a>
+                <a class="offcanvas-sublink" href="{{ url_for('main.projects', type='Major') }}">
+                  <i class="bi bi-layers-fill text-primary me-2"></i> Python Major Projects <span class="badge bg-primary-subtle text-primary ms-auto">₹1,000</span>
+                </a>
+              </div>
+            </div>
+          </li>
+
+          <!-- Services & Websites -->
+          <li class="offcanvas-nav-item">
+            <a class="offcanvas-nav-link {% if request.endpoint in ('main.services', 'main.service_detail') %}active{% endif %}" href="{{ url_for('main.services') }}" id="nav-services">
+              <span class="d-flex align-items-center gap-3">
+                <i class="bi bi-laptop-fill text-info fs-5"></i>
+                <span>Services & Websites</span>
+              </span>
+              <i class="bi bi-chevron-right text-muted small"></i>
+            </a>
+          </li>
+
+          <!-- Online Classes -->
+          <li class="offcanvas-nav-item">
+            <a class="offcanvas-nav-link {% if request.endpoint in ('main.courses', 'main.course_detail') %}active{% endif %}" href="{{ url_for('main.courses') }}" id="nav-courses">
+              <span class="d-flex align-items-center gap-3">
+                <i class="bi bi-mortarboard-fill text-warning fs-5"></i>
+                <span>Online Classes</span>
+              </span>
+              <i class="bi bi-chevron-right text-muted small"></i>
+            </a>
+          </li>
+
+          <!-- Portfolio -->
+          <li class="offcanvas-nav-item">
+            <a class="offcanvas-nav-link {% if request.endpoint == 'main.portfolio' %}active{% endif %}" href="{{ url_for('main.portfolio') }}" id="nav-portfolio">
+              <span class="d-flex align-items-center gap-3">
+                <i class="bi bi-briefcase-fill text-purple fs-5"></i>
+                <span>Portfolio</span>
+              </span>
+              <i class="bi bi-chevron-right text-muted small"></i>
+            </a>
+          </li>
+
+          <!-- About Us -->
+          <li class="offcanvas-nav-item">
+            <a class="offcanvas-nav-link {% if request.endpoint == 'main.about' %}active{% endif %}" href="{{ url_for('main.about') }}" id="nav-about">
+              <span class="d-flex align-items-center gap-3">
+                <i class="bi bi-building-fill text-info fs-5"></i>
+                <span>About Us</span>
+              </span>
+              <i class="bi bi-chevron-right text-muted small"></i>
+            </a>
+          </li>
+
+          <!-- FAQ -->
+          <li class="offcanvas-nav-item">
+            <a class="offcanvas-nav-link {% if request.endpoint == 'main.faq' %}active{% endif %}" href="{{ url_for('main.faq') }}" id="nav-faq">
+              <span class="d-flex align-items-center gap-3">
+                <i class="bi bi-question-circle-fill text-primary fs-5"></i>
+                <span>FAQ</span>
+              </span>
+              <i class="bi bi-chevron-right text-muted small"></i>
+            </a>
+          </li>
+
+          <!-- Contact Desk -->
+          <li class="offcanvas-nav-item">
+            <a class="offcanvas-nav-link {% if request.endpoint == 'main.contact' %}active{% endif %}" href="{{ url_for('main.contact') }}" id="nav-contact">
+              <span class="d-flex align-items-center gap-3">
+                <i class="bi bi-telephone-fill text-emerald fs-5"></i>
+                <span>Contact Desk</span>
+              </span>
+              <i class="bi bi-chevron-right text-muted small"></i>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Account Section inside Drawer -->
+        <div class="menu-section-label">ACCOUNT & ACCESS</div>
+        <div class="offcanvas-auth-block p-3 rounded-3 mb-4">
+          {% if current_user.is_authenticated %}
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="user-avatar-circle">
+                <i class="bi bi-person-fill text-primary fs-5"></i>
+              </div>
+              <div class="text-truncate">
+                <div class="fw-bold text-white text-truncate">{{ current_user.full_name or current_user.username }}</div>
+                <div class="text-muted small text-truncate">{{ current_user.email }}</div>
+              </div>
+            </div>
+            <div class="d-grid gap-2">
+              <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-light btn-sm d-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-grid-1x2-fill text-primary"></i> Customer Dashboard
+              </a>
+              {% if current_user.is_admin %}
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-nav-secondary btn-sm d-flex align-items-center justify-content-center gap-2">
+                  <i class="bi bi-speedometer2 text-primary"></i> Admin Dashboard
+                </a>
+              {% endif %}
+              <a href="{{ url_for('main.logout') }}" class="btn btn-danger-subtle btn-sm d-flex align-items-center justify-content-center gap-2 text-danger">
+                <i class="bi bi-box-arrow-right"></i> Sign Out
+              </a>
+            </div>
+          {% else %}
+            <div class="d-flex gap-2">
+              <a href="{{ url_for('main.login') }}" class="btn btn-nav-secondary btn-sm flex-grow-1 text-center" id="offcanvas-login-btn">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+              </a>
+              <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-sm flex-grow-1 text-center" id="offcanvas-register-btn">
+                <i class="bi bi-person-plus me-1"></i> Register
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Quick Connect Box at bottom of offcanvas -->
+      <div class="offcanvas-footer-contact pt-3 border-top border-secondary border-opacity-25">
+        <div class="menu-section-label">INSTANT ENGINEERING CONNECT</div>
+        <div class="d-flex flex-column gap-2 mt-2">
+          <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20want%20to%20discuss%20a%20project." 
+             target="_blank" rel="noopener" class="offcanvas-contact-btn btn-wa">
+            <i class="bi bi-whatsapp fs-5"></i>
+            <span>Chat on WhatsApp (+91 {{ site_settings.company_phone }})</span>
+          </a>
+          <a href="mailto:{{ site_settings.contact_email }}" class="offcanvas-contact-btn btn-mail">
+            <i class="bi bi-envelope-at-fill fs-5"></i>
+            <span class="text-truncate">{{ site_settings.contact_email }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flash Messages Alert Area -->
+  <div class="container mt-3">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show shadow-sm d-flex align-items-center gap-2" role="alert">
+            {% if category == 'success' %}
+              <i class="bi bi-check-circle-fill text-success fs-5"></i>
+            {% elif category == 'danger' or category == 'error' %}
+              <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+            {% elif category == 'warning' %}
+              <i class="bi bi-exclamation-circle-fill text-warning fs-5"></i>
+            {% else %}
+              <i class="bi bi-info-circle-fill text-info fs-5"></i>
+            {% endif %}
+            <div class="flex-grow-1">{{ message }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Main Content Container -->
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <!-- Footer -->
+  <footer class="site-footer pt-5 pb-3">
+    <div class="container">
+      <div class="row g-4 pb-4 border-bottom border-secondary-subtle">
+        <!-- Brand Info -->
+        <div class="col-lg-4 col-md-6">
+          <div class="brand-logo-wrap mb-3">
+            <div class="brand-emblem-box">
+              <img src="{{ url_for('static', filename='images/bitetech_emblem.png') }}" alt="Bitetech Technologies" class="brand-emblem-img">
+            </div>
+            <div class="brand-text-block">
+              <div class="brand-title fs-4">BITE<span class="brand-title-accent">TECH</span></div>
+              <div class="brand-subtitle text-cyan-glow">Where Ideas Become Innovation</div>
+            </div>
+          </div>
+          <p class="text-secondary small mb-3" style="max-width: 340px; line-height: 1.7;">
+            Turning Ideas into High-Impact Software. Specializing in Python engineering, full-stack websites, relational database architectures, and mentor-led programming education.
+          </p>
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge bg-secondary-subtle text-light border border-secondary">Mini Projects from ₹599</span>
+            <span class="badge bg-secondary-subtle text-light border border-secondary">Major Projects from ₹1,000</span>
+            <span class="badge bg-secondary-subtle text-light border border-secondary">Websites from ₹5,000</span>
+          </div>
+        </div>
+
+        <!-- Quick Links: Offerings -->
+        <div class="col-lg-2 col-md-6 col-6">
+          <h5 class="footer-heading mb-3 small text-uppercase tracking-wider">Offerings</h5>
+          <ul class="footer-links list-unstyled small d-flex flex-column gap-2 text-secondary">
+            <li><a href="{{ url_for('main.projects', type='Mini') }}">Python Mini Projects</a></li>
+            <li><a href="{{ url_for('main.projects', type='Major') }}">Python Major Projects</a></li>
+            <li><a href="{{ url_for('main.services') }}">Shop Websites (₹5,000)</a></li>
+            <li><a href="{{ url_for('main.services') }}">Website with Hosting (₹7,000)</a></li>
+            <li><a href="{{ url_for('main.courses') }}">Online Classes (from ₹299)</a></li>
+            <li><a href="{{ url_for('main.portfolio') }}">Project Portfolio</a></li>
+          </ul>
+        </div>
+
+        <!-- Navigation & Account -->
+        <div class="col-lg-2 col-md-6 col-6">
+          <h5 class="footer-heading mb-3 small text-uppercase tracking-wider">Company & Account</h5>
+          <ul class="footer-links list-unstyled small d-flex flex-column gap-2 text-secondary">
+            <li><a href="{{ url_for('main.about') }}">About Bitetech</a></li>
+            <li><a href="{{ url_for('main.faq') }}">FAQs</a></li>
+            <li><a href="{{ url_for('main.contact') }}">Contact Desk</a></li>
+            <li><a href="{{ url_for('main.login') }}">Customer Sign In</a></li>
+            <li><a href="{{ url_for('main.register') }}">Create Account</a></li>
+            <li><a href="{{ url_for('admin.login') }}" class="opacity-75"><i class="bi bi-shield-lock me-1"></i> Admin Portal</a></li>
+          </ul>
+        </div>
+
+        <!-- Policies & Quick Direct Hotline -->
+        <div class="col-lg-4 col-md-6">
+          <h5 class="footer-heading mb-3 small text-uppercase tracking-wider">Trust & Policies</h5>
+          <ul class="footer-links list-unstyled small d-flex flex-column gap-2 text-secondary mb-3">
+            <li><a href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a></li>
+            <li><a href="{{ url_for('main.terms') }}">Terms and Conditions</a></li>
+            <li><a href="{{ url_for('main.refund_policy') }}">Refund and Cancellation Policy</a></li>
+            <li><a href="{{ url_for('main.project_delivery_policy') }}">Project Delivery and Revision Policy</a></li>
+            <li><a href="{{ url_for('main.hosting_renewal_policy') }}">Hosting and Renewal Policy</a></li>
+          </ul>
+          
+          <div class="p-3 rounded-3 bg-surface border border-secondary text-secondary small">
+            <div class="text-white fw-semibold mb-1"><i class="bi bi-telephone-outbound text-success me-1"></i> Direct Engineering Desk:</div>
+            <div>Phone / WhatsApp: <a href="tel:{{ site_settings.company_phone }}" class="text-light text-decoration-none fw-bold">+91 {{ site_settings.company_phone }}</a></div>
+            <div>Official Email: <a href="mailto:{{ site_settings.company_email }}" class="text-light text-decoration-none">{{ site_settings.company_email }}</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 small text-secondary">
+        <div>
+          &copy; {{ current_year }} {{ site_settings.company_name }}. All rights reserved. &bull; Where Ideas Become Innovation
+        </div>
+        <div class="mt-2 mt-md-0">
+          Python Engineering &bull; Web Architecture &bull; Transparent Indian Rupee (₹) Pricing
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Creative Multi-Action Floating Contact Hub -->
+  <div class="floating-contact-hub" id="contactHub">
+    <!-- Quick Contact Popup Drawer -->
+    <div class="contact-hub-card shadow-lg" id="contactHubDrawer">
+      <div class="contact-hub-header">
+        <div class="d-flex align-items-center gap-2">
+          <span class="pulse-indicator">
+            <span class="ping-circle"></span>
+            <span class="dot-circle"></span>
+          </span>
+          <div>
+            <div class="hub-title">Direct Engineering Desk</div>
+            <div class="hub-status text-emerald">Available &bull; Replies in &lt;15 mins</div>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white small ms-auto" id="closeContactHub" aria-label="Close"></button>
+      </div>
+      <div class="contact-hub-body">
+        <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20am%20interested%20in%20your%20Python%20projects/classes." 
+           class="hub-action-btn hub-whatsapp" target="_blank" rel="noopener">
+          <i class="bi bi-whatsapp"></i>
+          <div class="text-start flex-grow-1">
+            <div class="hub-btn-label">Chat on WhatsApp</div>
+            <div class="hub-btn-sub">+91 {{ site_settings.company_phone }} (Fastest response)</div>
+          </div>
+          <i class="bi bi-arrow-right-short fs-4"></i>
+        </a>
+        <a href="tel:{{ site_settings.company_phone }}" class="hub-action-btn hub-call">
+          <i class="bi bi-telephone-fill"></i>
+          <div class="text-start flex-grow-1">
+            <div class="hub-btn-label">Direct Phone Call</div>
+            <div class="hub-btn-sub">Speak with our Project Lead</div>
+          </div>
+          <i class="bi bi-arrow-right-short fs-4"></i>
+        </a>
+        <a href="{{ url_for('main.contact') }}" class="hub-action-btn hub-form">
+          <i class="bi bi-file-earmark-code-fill"></i>
+          <div class="text-start flex-grow-1">
+            <div class="hub-btn-label">Request Written Quote</div>
+            <div class="hub-btn-sub">Submit your specific requirements</div>
+          </div>
+          <i class="bi bi-arrow-right-short fs-4"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Floating Trigger Button -->
+    <button type="button" class="floating-contact-trigger" id="contactHubToggle" aria-label="Quick Contact Options">
+      <span class="hub-ping-radar"></span>
+      <i class="bi bi-chat-dots-fill hub-icon-chat"></i>
+      <i class="bi bi-x-lg hub-icon-close"></i>
+      <span class="hub-trigger-label d-none d-sm-inline">Contact Desk</span>
+    </button>
+  </div>
+
+  <!-- Mobile Quick Contact Bottom Dock -->
+  <div class="mobile-bottom-dock d-md-none">
+    <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20have%20an%20enquiry." 
+       class="btn-dock btn-dock-whatsapp" target="_blank" rel="noopener">
+      <i class="bi bi-whatsapp"></i> WhatsApp
+    </a>
+    <a href="tel:{{ site_settings.company_phone }}" class="btn-dock btn-dock-call">
+      <i class="bi bi-telephone-fill"></i> Call Now
+    </a>
+    <a href="{{ url_for('main.contact') }}" class="btn-dock btn-dock-quote">
+      <i class="bi bi-send-fill"></i> Quote
+    </a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script>
+    if (typeof bootstrap === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"><\/script>');
+    }
+  </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

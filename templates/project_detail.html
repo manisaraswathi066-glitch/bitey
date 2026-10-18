@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.title }} — Bitetech Technologies{% endblock %}
+
+{% block meta_description %}{{ project.short_description }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-2">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.projects') }}" class="text-decoration-none">Projects</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ project.title }}</li>
+      </ol>
+    </nav>
+
+    <div class="row align-items-center justify-content-between g-4">
+      <div class="col-lg-8">
+        <div class="d-flex flex-wrap gap-2 mb-2">
+          {% if project.project_type == 'Mini' %}
+            <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold">
+              Python Mini Project (₹599)
+            </span>
+          {% else %}
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold">
+              Python Major Project (₹1,000)
+            </span>
+          {% endif %}
+          
+          <span class="badge bg-light text-dark border">{{ project.category.name if project.category else 'General Python' }}</span>
+
+          {% if project.availability_status == 'Available' %}
+            <span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle me-1"></i> Available</span>
+          {% elif project.availability_status == 'Custom Order' %}
+            <span class="badge bg-info-subtle text-info border"><i class="bi bi-clock me-1"></i> Custom Order</span>
+          {% else %}
+            <span class="badge bg-secondary-subtle text-secondary border">{{ project.availability_status }}</span>
+          {% endif %}
+        </div>
+
+        <h1 class="fw-bold mb-2">{{ project.title }}</h1>
+        <p class="lead text-muted mb-0">{{ project.short_description }}</p>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <div class="p-3 bg-light rounded-4 border d-inline-block text-start">
+          <div class="small text-muted mb-1">Starting Baseline Price:</div>
+          <div class="fs-2 fw-bold text-dark">{{ project.price_range }}</div>
+          <div class="small text-secondary mb-2"><i class="bi bi-shield-check text-success me-1"></i> Verified Clean Source Code</div>
+          <a href="#enquiry-form-section" class="btn btn-primary btn-sm w-100">
+            <i class="bi bi-send-fill me-1"></i> Order / Enquire on this Project
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Project Body & Enquiry Form -->
+<section class="py-5 bg-light min-vh-50">
+  <div class="container">
+    <div class="row g-5">
+      <!-- Left Column: Project Documentation -->
+      <div class="col-lg-7">
+        
+        <!-- Problem Statement -->
+        {% if project.problem_statement %}
+          <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="bi bi-lightbulb-fill text-warning fs-3"></i>
+              <h4 class="fw-bold mb-0">Problem Statement & Purpose</h4>
+            </div>
+            <p class="text-secondary mb-0" style="line-height: 1.8;">
+              {{ project.problem_statement }}
+            </p>
+          </div>
+        {% endif %}
+
+        <!-- Architecture & Full Description -->
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+          <h4 class="fw-bold mb-3">System Architecture & Description</h4>
+          <div class="text-secondary project-markdown" style="line-height: 1.8;">
+            {{ project.full_description | safe }}
+          </div>
+        </div>
+
+        <!-- Technologies Used -->
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+          <h4 class="fw-bold mb-3"><i class="bi bi-cpu-fill text-primary me-2"></i> Technologies & Tools</h4>
+          <div class="d-flex flex-wrap gap-2">
+            {% for tech in project.tech_list() %}
+              <span class="badge-tech fs-6 px-3 py-2">{{ tech }}</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Key Features -->
+        {% if project.feature_list() %}
+          <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-stars text-warning me-2"></i> Key Features Included</h4>
+            <div class="row g-3">
+              {% for feat in project.feature_list() %}
+                <div class="col-md-6">
+                  <div class="p-3 bg-light rounded-3 border h-100 d-flex align-items-start gap-2">
+                    <i class="bi bi-check-circle-fill text-success fs-5 mt-n1"></i>
+                    <span class="small text-dark fw-medium">{{ feat }}</span>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Expected Deliverables -->
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+          <h4 class="fw-bold mb-3"><i class="bi bi-box-seam-fill text-primary me-2"></i> What You Receive (Deliverables)</h4>
+          <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+            {% for deliv in project.deliverable_list() %}
+              <li class="d-flex align-items-start gap-2 small text-secondary">
+                <i class="bi bi-check-lg text-success fs-5 mt-n1"></i>
+                <span>{{ deliv }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Enquiry / Order Form -->
+      <div class="col-lg-5" id="enquiry-form-section">
+        <div class="p-4 p-md-5 rounded-4 bg-white border shadow-sm sticky-top" style="top: 90px;">
+          <div class="text-center mb-4">
+            <span class="badge-price mb-2 d-inline-block">Instant Response</span>
+            <h4 class="fw-bold">Project Enquiry & Order Form</h4>
+            <p class="text-muted small mb-0">
+              Submit your enquiry for <strong>{{ project.title }}</strong>. Our development team will review requirements and reach out via email or WhatsApp within 24 hours.
+            </p>
+          </div>
+
+          <form action="{{ url_for('main.project_detail', slug=project.slug) }}" method="POST">
+            {{ form.csrf_token }}
+            {{ form.project_id() }}
+
+            <div style="display:none;">
+              {{ form.website_hp() }}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Your Full Name <span class="text-danger">*</span></label>
+              {{ form.client_name(class="form-control", placeholder="e.g. Aarav Mehta") }}
+              {% for err in form.client_name.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
+              {{ form.client_email(class="form-control", placeholder="name@example.com") }}
+              {% for err in form.client_email.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Contact / WhatsApp Number <span class="text-danger">*</span></label>
+              {{ form.client_phone(class="form-control", placeholder="e.g. 7418332912") }}
+              {% for err in form.client_phone.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Project Scope</label>
+                {{ form.project_type(class="form-select small") }}
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Budget Range</label>
+                {{ form.budget_range(class="form-select small") }}
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label small fw-semibold">Detailed Requirements & Deadlines <span class="text-danger">*</span></label>
+              {{ form.requirements(class="form-control", rows=4, placeholder="Mention any customizations, additional features, database preferences (MySQL or SQLite), and target delivery date...") }}
+              {% for err in form.requirements.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-primary py-2 fw-semibold" id="btn-project-enquiry-submit">
+                <i class="bi bi-send-check-fill me-1"></i> Submit Project Enquiry
+              </button>
+            </div>
+          </form>
+
+          <div class="pt-3 border-top text-center">
+            <span class="small text-muted d-block mb-2">Need quick clarification?</span>
+            <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20have%20an%20enquiry%20regarding%20{{ project.title|urlencode }}." 
+               class="btn btn-sm btn-whatsapp w-100" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp"></i> Chat on WhatsApp (+91 {{ site_settings.company_phone }})
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

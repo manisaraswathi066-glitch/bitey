@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Dashboard — Bitetech Technologies{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-2">
+    <div class="row align-items-center justify-content-between g-4">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary-subtle text-primary p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <i class="bi bi-person-fill fs-2"></i>
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <h2 class="fw-bold mb-0 text-dark">{{ current_user.full_name or current_user.username }}</h2>
+              <span class="badge bg-primary text-uppercase">{{ current_user.role }}</span>
+            </div>
+            <p class="text-muted small mb-0">
+              <i class="bi bi-envelope me-1"></i> {{ current_user.email }} 
+              {% if current_user.phone %}&bull; <i class="bi bi-telephone ms-1 me-1"></i> {{ current_user.phone }}{% endif %}
+              &bull; <i class="bi bi-calendar-check ms-1 me-1"></i> Joined {{ current_user.created_at.strftime('%b %Y') }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 text-lg-end d-flex flex-wrap gap-2 justify-content-lg-end">
+        <a href="{{ url_for('main.projects') }}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-grid me-1"></i> Explore Projects
+        </a>
+        <a href="{{ url_for('main.courses') }}" class="btn btn-purple btn-sm">
+          <i class="bi bi-mortarboard me-1"></i> Browse Classes
+        </a>
+        <a href="{{ url_for('main.services') }}" class="btn btn-primary btn-sm">
+          <i class="bi bi-file-earmark-plus me-1"></i> Request Quote
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row g-3 mt-4">
+      <div class="col-md-3 col-6">
+        <div class="p-3 bg-light rounded-3 border">
+          <div class="text-muted small">Project Enquiries</div>
+          <div class="fs-3 fw-bold text-dark">{{ project_enquiries|length }}</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="p-3 bg-light rounded-3 border">
+          <div class="text-muted small">Course Registrations</div>
+          <div class="fs-3 fw-bold text-dark">{{ course_enquiries|length }}</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="p-3 bg-light rounded-3 border">
+          <div class="text-muted small">Service Quotations</div>
+          <div class="fs-3 fw-bold text-dark">{{ service_enquiries|length }}</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="p-3 bg-light rounded-3 border">
+          <div class="text-muted small">Messages Sent</div>
+          <div class="fs-3 fw-bold text-dark">{{ contact_messages|length }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Main Content Tabs -->
+<section class="py-5 bg-light min-vh-50">
+  <div class="container">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+      <!-- Tabs Navigation -->
+      <div class="card-header bg-white border-bottom p-0">
+        <ul class="nav nav-tabs border-0 px-3 pt-2" id="dashboardTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active py-3 px-4 fw-semibold border-0 border-bottom border-3 border-primary" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-content" type="button" role="tab">
+              <i class="bi bi-kanban me-1 text-primary"></i> Project Enquiries ({{ project_enquiries|length }})
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link py-3 px-4 fw-semibold border-0 text-secondary" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses-content" type="button" role="tab">
+              <i class="bi bi-mortarboard me-1 text-purple"></i> Class Registrations ({{ course_enquiries|length }})
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link py-3 px-4 fw-semibold border-0 text-secondary" id="services-tab" data-bs-toggle="tab" data-bs-target="#services-content" type="button" role="tab">
+              <i class="bi bi-window-sidebar me-1 text-info"></i> Service Quotes ({{ service_enquiries|length }})
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link py-3 px-4 fw-semibold border-0 text-secondary" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-content" type="button" role="tab">
+              <i class="bi bi-person-gear me-1 text-dark"></i> Profile Settings
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body p-4">
+        <div class="tab-content" id="dashboardTabContent">
+          
+          <!-- TAB 1: Project Enquiries -->
+          <div class="tab-pane fade show active" id="projects-content" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="fw-bold mb-0">My Python Project Enquiries</h5>
+              <a href="{{ url_for('main.projects') }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-plus-circle me-1"></i> Explore New Projects
+              </a>
+            </div>
+
+            {% if project_enquiries %}
+              <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Project Title / Scope</th>
+                      <th scope="col">Budget</th>
+                      <th scope="col">Date Submitted</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Company Response / Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for pe in project_enquiries %}
+                      <tr>
+                        <td class="fw-bold text-muted">#{{ pe.id }}</td>
+                        <td>
+                          {% if pe.project %}
+                            <a href="{{ url_for('main.project_detail', slug=pe.project.slug) }}" class="fw-semibold text-dark text-decoration-none">
+                              {{ pe.project.title }}
+                            </a>
+                            <div class="small text-muted">{{ pe.project_type }}</div>
+                          {% else %}
+                            <span class="fw-semibold text-dark">{{ pe.project_type or 'Custom Python Project' }}</span>
+                          {% endif %}
+                        </td>
+                        <td class="text-nowrap"><span class="badge bg-light text-dark border">{{ pe.budget_range }}</span></td>
+                        <td class="small text-secondary text-nowrap">{{ pe.created_at.strftime('%d %b %Y') }}</td>
+                        <td class="text-nowrap">
+                          {% if pe.status == 'New' %}
+                            <span class="badge bg-warning text-dark">Under Review</span>
+                          {% elif pe.status == 'Contacted' %}
+                            <span class="badge bg-info text-dark">Contacted</span>
+                          {% elif pe.status == 'In Progress' %}
+                            <span class="badge bg-primary">In Development</span>
+                          {% elif pe.status == 'Completed' %}
+                            <span class="badge bg-success">Completed</span>
+                          {% else %}
+                            <span class="badge bg-secondary">{{ pe.status }}</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if pe.company_response or pe.admin_notes %}
+                            <div class="p-2 bg-light rounded small text-dark border">
+                              <i class="bi bi-chat-left-dots text-primary me-1"></i> {{ pe.company_response or pe.admin_notes }}
+                            </div>
+                          {% else %}
+                            <span class="text-muted small italic">Pending review by our technical team</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="text-center py-5">
+                <div class="display-6 text-muted mb-3"><i class="bi bi-folder2-open"></i></div>
+                <h5 class="fw-semibold">No project enquiries submitted yet</h5>
+                <p class="text-muted small mx-auto" style="max-width: 450px;">
+                  Explore our verified Python Mini Projects starting at ₹599 or major web projects from ₹1,000.
+                </p>
+                <a href="{{ url_for('main.projects') }}" class="btn btn-primary btn-sm px-4">
+                  Browse Projects Catalog
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- TAB 2: Class Registrations -->
+          <div class="tab-pane fade" id="courses-content" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="fw-bold mb-0">My Online Class Registrations</h5>
+              <a href="{{ url_for('main.courses') }}" class="btn btn-sm btn-purple">
+                <i class="bi bi-plus-circle me-1"></i> Join Another Class
+              </a>
+            </div>
+
+            {% if course_enquiries %}
+              <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Course Name</th>
+                      <th scope="col">Preferred Batch</th>
+                      <th scope="col">Learning Mode</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Coordinator Update</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for ce in course_enquiries %}
+                      <tr>
+                        <td class="fw-bold text-muted">#{{ ce.id }}</td>
+                        <td>
+                          {% if ce.course %}
+                            <a href="{{ url_for('main.course_detail', slug=ce.course.slug) }}" class="fw-semibold text-dark text-decoration-none">
+                              {{ ce.course.title }}
+                            </a>
+                            <div class="small text-muted">{{ ce.course.duration }} &bull; {{ ce.course.price }}</div>
+                          {% else %}
+                            <span class="fw-semibold text-dark">Course Interest</span>
+                          {% endif %}
+                        </td>
+                        <td class="small text-nowrap">{{ ce.preferred_batch }}</td>
+                        <td class="text-nowrap"><span class="badge bg-purple-subtle text-purple border">{{ ce.learning_mode or 'Online Live' }}</span></td>
+                        <td class="text-nowrap">
+                          {% if ce.status == 'New' %}
+                            <span class="badge bg-warning text-dark">Enquiry Received</span>
+                          {% elif ce.status == 'Contacted' %}
+                            <span class="badge bg-info text-dark">Batch Confirmed</span>
+                          {% elif ce.status == 'In Progress' %}
+                            <span class="badge bg-primary">Class Active</span>
+                          {% elif ce.status == 'Completed' %}
+                            <span class="badge bg-success">Course Completed</span>
+                          {% else %}
+                            <span class="badge bg-secondary">{{ ce.status }}</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if ce.company_response or ce.admin_notes %}
+                            <div class="p-2 bg-light rounded small text-dark border">
+                              <i class="bi bi-calendar-event text-purple me-1"></i> {{ ce.company_response or ce.admin_notes }}
+                            </div>
+                          {% else %}
+                            <span class="text-muted small">Coordinator will share syllabus & link on WhatsApp</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="text-center py-5">
+                <div class="display-6 text-muted mb-3"><i class="bi bi-mortarboard"></i></div>
+                <h5 class="fw-semibold">No class registrations found</h5>
+                <p class="text-muted small mx-auto" style="max-width: 450px;">
+                  Master Python, C, C++, Web Development, or Data Science with live interactive mentoring starting from just ₹299.
+                </p>
+                <a href="{{ url_for('main.courses') }}" class="btn btn-purple btn-sm px-4">
+                  Browse Online Classes
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- TAB 3: Service Quotations -->
+          <div class="tab-pane fade" id="services-content" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="fw-bold mb-0">My Website & Software Quotations</h5>
+              <a href="{{ url_for('main.services') }}" class="btn btn-sm btn-outline-info text-dark">
+                <i class="bi bi-plus-circle me-1"></i> Request New Quote
+              </a>
+            </div>
+
+            {% if service_enquiries %}
+              <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Project / Business</th>
+                      <th scope="col">Budget Range</th>
+                      <th scope="col">Target Timeline</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Proposal Update</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for se in service_enquiries %}
+                      <tr>
+                        <td class="fw-bold text-muted">#{{ se.id }}</td>
+                        <td>
+                          <div class="fw-semibold text-dark">{{ se.project_title }}</div>
+                          <div class="small text-muted">{{ se.service.title if se.service else 'Website Development' }}</div>
+                        </td>
+                        <td class="text-nowrap"><span class="badge bg-light text-dark border">{{ se.budget_range }}</span></td>
+                        <td class="small text-nowrap">{{ se.target_timeline }}</td>
+                        <td class="text-nowrap">
+                          {% if se.status == 'New' %}
+                            <span class="badge bg-warning text-dark">Scoping Scope</span>
+                          {% elif se.status == 'Contacted' %}
+                            <span class="badge bg-info text-dark">Proposal Sent</span>
+                          {% elif se.status == 'In Progress' %}
+                            <span class="badge bg-primary">In Development</span>
+                          {% elif se.status == 'Completed' %}
+                            <span class="badge bg-success">Delivered</span>
+                          {% else %}
+                            <span class="badge bg-secondary">{{ se.status }}</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if se.company_response or se.admin_notes %}
+                            <div class="p-2 bg-light rounded small text-dark border">
+                              <i class="bi bi-file-earmark-check text-success me-1"></i> {{ se.company_response or se.admin_notes }}
+                            </div>
+                          {% else %}
+                            <span class="text-muted small">Our technical team is reviewing your project requirements.</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="text-center py-5">
+                <div class="display-6 text-muted mb-3"><i class="bi bi-window-sidebar"></i></div>
+                <h5 class="fw-semibold">No website or service quotes requested</h5>
+                <p class="text-muted small mx-auto" style="max-width: 450px;">
+                  Need a modern Shop Website starting from ₹5,000 or a complete Website with Hosting from ₹7,000? Request a transparent proposal.
+                </p>
+                <a href="{{ url_for('main.services') }}" class="btn btn-outline-navy btn-sm px-4">
+                  Request Website Quote
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- TAB 4: Profile Settings -->
+          <div class="tab-pane fade" id="profile-content" role="tabpanel">
+            <div class="row">
+              <div class="col-lg-6">
+                <h5 class="fw-bold mb-3">Update Profile Information</h5>
+                <form method="POST" action="{{ url_for('main.update_profile') }}">
+                  {{ profile_form.csrf_token }}
+
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold">Username</label>
+                    <input type="text" class="form-control bg-light" value="{{ current_user.username }}" readonly disabled>
+                    <div class="form-text small">Usernames cannot be modified after registration.</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold">Email Address</label>
+                    <input type="email" class="form-control bg-light" value="{{ current_user.email }}" readonly disabled>
+                    <div class="form-text small">Contact bitetechtechnologies@gmail.com to update your verified email address.</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold">Full Name <span class="text-danger">*</span></label>
+                    {{ profile_form.full_name(class="form-control") }}
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label small fw-semibold">Phone / WhatsApp Number <span class="text-danger">*</span></label>
+                    {{ profile_form.phone(class="form-control") }}
+                    <div class="form-text small">Used to send project files and online class schedules.</div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary px-4 py-2" id="btn-update-profile-submit">
+                    <i class="bi bi-save me-1"></i> Save Changes
+                  </button>
+                </form>
+              </div>
+
+              <div class="col-lg-5 offset-lg-1 mt-4 mt-lg-0">
+                <div class="p-4 bg-light rounded-4 border">
+                  <h6 class="fw-bold text-dark mb-2"><i class="bi bi-shield-check text-success me-1"></i> Account Security & Privacy</h6>
+                  <p class="text-secondary small mb-3">
+                    Your personal information is protected under Bitetech Technologies privacy controls. We only use your WhatsApp and email to deliver technical deliverables and coordinate classes.
+                  </p>
+                  <ul class="list-unstyled small text-secondary mb-3">
+                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Role: <strong>{{ current_user.role|capitalize }}</strong></li>
+                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Account Status: <strong>Active & Verified</strong></li>
+                    <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> CSRF & Session Protection: <strong>Enabled</strong></li>
+                  </ul>
+                  <a href="{{ url_for('main.forgot_password') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-key me-1"></i> Change Password
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

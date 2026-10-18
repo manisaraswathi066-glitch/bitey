@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Refund & Project Delivery Conditions — Bitetech Technologies{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <span class="badge-price mb-2 d-inline-block">Delivery & Guarantees</span>
+    <h1 class="fw-bold mb-2">Refund Policy & Delivery Conditions</h1>
+    <p class="text-muted mb-0">Clear and honest terms regarding code handovers, revisions, and cancellations.</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm policy-content" style="line-height: 1.8;">
+          {% if content %}
+            {{ content | e | replace('\n', '<br>') | safe }}
+          {% else %}
+            <h4>1. Pre-Delivery Verification</h4>
+            <p>Before handing over final customized Python projects, we demonstrate functional execution via video walkthrough or interactive screen share.</p>
+
+            <h4>2. 7-Day Complimentary Support</h4>
+            <p>Every delivered project includes 7 days of complimentary technical support for environment configuration (Python 3.13 / WAMP MySQL / SQLite) and bug fixes.</p>
+
+            <h4>3. Cancellation & Refunds</h4>
+            <p>Orders cancelled before development commencement receive a full 100% refund. Delivered digital source code packages cannot be refunded once handed over.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

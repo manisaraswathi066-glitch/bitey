@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy — Bitetech Technologies{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <span class="badge-price mb-2 d-inline-block">Legal & Trust</span>
+    <h1 class="fw-bold mb-2">Privacy Policy</h1>
+    <p class="text-muted mb-0">How Bitetech Technologies protects and handles client and student data.</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm policy-content" style="line-height: 1.8;">
+          {% if content %}
+            {{ content | e | replace('\n', '<br>') | safe }}
+          {% else %}
+            <h4>1. Information We Collect</h4>
+            <p>We collect contact details voluntarily submitted through our enquiry, registration, and quotation forms (Name, Email, WhatsApp Phone number, and project descriptions).</p>
+            
+            <h4>2. Use of Information</h4>
+            <p>Your details are used strictly to communicate project scopes, supply code deliveries, and schedule online programming classes. We do not sell or monetize personal contact data.</p>
+            
+            <h4>3. Security</h4>
+            <p>We maintain secure server sessions, CSRF validation, and hashed authentication for administrative access.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

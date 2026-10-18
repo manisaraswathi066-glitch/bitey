@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Project Delivery & Revision Policy — Bitetech Technologies{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <span class="badge-price mb-2 d-inline-block">Deliverables & Transparency</span>
+    <h1 class="fw-bold mb-2">Project Delivery and Revision Policy</h1>
+    <p class="text-muted mb-0">How Bitetech Technologies delivers digital code, verifies specifications, and handles revisions.</p>
+  </div>
+</section>
+
+<section class="py-5 bg-light min-vh-50">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm policy-content" style="line-height: 1.8;">
+          {% if content %}
+            {{ content | e | replace('\n', '<br>') | safe }}
+          {% else %}
+            <h4>1. Electronic Delivery of Digital Code</h4>
+            <p>All software deliverables, including Python source code, database setup scripts (for SQLite and WAMP MySQL), and documentation manuals, are delivered electronically via verified cloud download links or direct email transfer.</p>
+
+            <h4>2. Delivery Timelines</h4>
+            <ul>
+              <li><strong>Python Mini Projects (Starting at ₹599):</strong> Typically delivered within 24 to 48 hours for standard reference implementations.</li>
+              <li><strong>Python Major Projects (Starting at ₹1,000):</strong> Delivered within 5 to 10 working days, depending on scope and testing requirements.</li>
+              <li><strong>Website Development (Starting at ₹5,000):</strong> Delivered within 5 to 7 working days for Shop/Small Business websites.</li>
+            </ul>
+
+            <h4>3. Complimentary Revisions</h4>
+            <p>Every standard custom software delivery includes up to two (2) complimentary rounds of minor revisions to ensure the code executes according to the mutually agreed technical specifications.</p>
+
+            <h4>4. Scope Expansions</h4>
+            <p>Any additional features, new pages, or architectural pivots requested after project sign-off are quoted separately at transparent hourly or milestone rates.</p>
+
+            <h4>5. Setup & Verification Support</h4>
+            <p>We provide a 7-day complimentary setup verification period during which our team assists with local environment configuration, dependency installation, and database connection via WhatsApp or screen sharing.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

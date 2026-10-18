@@ -1,0 +1,84 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ title }} — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1">{{ title }}</h2>
+    <p class="text-light-silver small mb-0">Record software showcases and reference projects.</p>
+  </div>
+  <a href="{{ url_for('admin.portfolio') }}" class="btn btn-outline-info btn-sm text-white">
+    <i class="bi bi-arrow-left me-1"></i> Back to Portfolio
+  </a>
+</div>
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="admin-card p-4 p-md-5">
+      <form method="POST">
+        {{ form.csrf_token }}
+
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label text-white fw-semibold">Project Title <span class="text-danger">*</span></label>
+            {{ form.title(class="form-control", placeholder="e.g. Dynamic Inventory & Stock System") }}
+            {% for err in form.title.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label text-white fw-semibold">Category <span class="text-danger">*</span></label>
+            {{ form.category(class="form-control", placeholder="e.g. Full-Stack Web App") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label text-white fw-semibold">Technologies Used <span class="text-danger">*</span></label>
+            {{ form.technologies(class="form-control", placeholder="e.g. Python 3.13, Flask, SQLAlchemy, MySQL, Bootstrap 5") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label text-white fw-semibold">Project Type / Context</label>
+            {{ form.client_type(class="form-control", placeholder="e.g. Reference Architecture / Engineering Demo") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label text-white fw-semibold">Description <span class="text-danger">*</span></label>
+            {{ form.description(class="form-control", rows=4, placeholder="Architectural summary of the solution...") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label text-white fw-semibold">Key Highlights (One per line)</label>
+            {{ form.features(class="form-control", rows=3, placeholder="Barcode scanner integration\nDaily stock reconciliations\nWAMP MySQL backend") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label text-white fw-semibold">Live Link / Repository Link</label>
+            {{ form.live_url(class="form-control", placeholder="https://example.com or #") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label text-white fw-semibold">Image URL (Optional)</label>
+            {{ form.image_url(class="form-control", placeholder="https://example.com/screenshot.png") }}
+          </div>
+
+          <div class="col-12 pt-3 border-top">
+            <div class="form-check">
+              {{ form.is_published(class="form-check-input", id="portfolioPublishedCheck") }}
+              <label class="form-check-label fw-semibold text-white" for="portfolioPublishedCheck">Published (Visible in Public Portfolio)</label>
+            </div>
+          </div>
+
+          <div class="col-12 mt-4 pt-2">
+            <button type="submit" class="btn btn-primary px-4 py-2">
+              <i class="bi bi-save me-1"></i> Save Portfolio Entry
+            </button>
+            <a href="{{ url_for('admin.portfolio') }}" class="btn btn-outline-secondary text-light-silver ms-2">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Security Audit Logs — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1"><i class="bi bi-shield-shaded text-cyan-glow me-2"></i>Security Audit Logs</h2>
+    <p class="text-light-silver small mb-0">Immutable record of administrator actions, authentication events, and defensive alerts.</p>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="admin-card p-3 mb-4">
+  <form method="GET" action="{{ url_for('admin.audit_logs') }}" class="row g-2 align-items-center">
+    <div class="col-md-3">
+      <label class="form-label small fw-bold text-white mb-1">Action Type</label>
+      <select name="action" class="form-select form-select-sm" onchange="this.form.submit()">
+        <option value="">All Actions</option>
+        {% for act in distinct_actions %}
+          <option value="{{ act }}" {% if selected_action == act %}selected{% endif %}>{{ act }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label small fw-bold text-white mb-1">Status</label>
+      <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+        <option value="">All Statuses</option>
+        <option value="SUCCESS" {% if selected_status == 'SUCCESS' %}selected{% endif %}>SUCCESS</option>
+        <option value="FAILED" {% if selected_status == 'FAILED' %}selected{% endif %}>FAILED</option>
+        <option value="WARNING" {% if selected_status == 'WARNING' %}selected{% endif %}>WARNING</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label small fw-bold text-white mb-1">Search Keywords</label>
+      <div class="input-group input-group-sm">
+        <input type="text" name="q" class="form-control" placeholder="Search user, IP, or details..." value="{{ search_query }}">
+        <button class="btn btn-primary" type="submit">Filter</button>
+      </div>
+    </div>
+
+    <div class="col-md-2 text-md-end pt-md-3">
+      {% if search_query or selected_action or selected_status %}
+        <a href="{{ url_for('admin.audit_logs') }}" class="btn btn-link btn-sm text-danger text-decoration-none">
+          <i class="bi bi-x-circle"></i> Clear Filters
+        </a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- Table Card -->
+<div class="admin-card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark-header">
+        <tr>
+          <th>Timestamp (UTC)</th>
+          <th>Actor</th>
+          <th>Action</th>
+          <th>Target</th>
+          <th>IP Address</th>
+          <th>Details</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+          <tr>
+            <td class="small text-light-silver whitespace-nowrap">
+              {{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+            </td>
+            <td class="text-nowrap">
+              <div class="fw-bold small text-white">{{ log.username or 'System / Anonymous' }}</div>
+            </td>
+            <td class="text-nowrap">
+              <code class="fw-bold text-cyan-glow px-2 py-1 rounded" style="background: rgba(0,212,255,0.08);">{{ log.action }}</code>
+            </td>
+            <td class="text-nowrap">
+              {% if log.target_type %}
+                <span class="badge-dark-pill">{{ log.target_type }}:{{ log.target_id }}</span>
+              {% else %}
+                <span class="text-light-silver small">&mdash;</span>
+              {% endif %}
+            </td>
+            <td class="small text-light-silver font-monospace text-nowrap">{{ log.ip_address }}</td>
+            <td>
+              <div class="small text-light-silver text-truncate" style="max-width: 320px;" title="{{ log.details }}">
+                {{ log.details or 'None' }}
+              </div>
+            </td>
+            <td class="text-nowrap">
+              {% if log.status == 'SUCCESS' %}
+                <span class="badge bg-success-subtle text-success border border-success-subtle">SUCCESS</span>
+              {% elif log.status == 'WARNING' %}
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">WARNING</span>
+              {% else %}
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">FAILED</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="7" class="text-center py-5 text-light-silver">
+              <i class="bi bi-shield-check fs-2 text-cyan-glow d-block mb-2"></i>
+              No audit log entries match the current filter.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if pagination.pages > 1 %}
+    <div class="p-3 border-top d-flex justify-content-between align-items-center">
+      <div class="small text-light-silver">Page {{ pagination.page }} of {{ pagination.pages }} ({{ pagination.total }} total events)</div>
+      <nav>
+        <ul class="pagination pagination-sm mb-0">
+          {% if pagination.has_prev %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('admin.audit_logs', page=pagination.prev_num, action=selected_action, status=selected_status, q=search_query) }}">Previous</a>
+            </li>
+          {% endif %}
+          {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if p %}
+              <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('admin.audit_logs', page=p, action=selected_action, status=selected_status, q=search_query) }}">{{ p }}</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+            {% endif %}
+          {% endfor %}
+          {% if pagination.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('admin.audit_logs', page=pagination.next_num, action=selected_action, status=selected_status, q=search_query) }}">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage FAQs — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1">Frequently Asked Questions</h2>
+    <p class="text-light-silver small mb-0">Manage customer Q&As and display categories.</p>
+  </div>
+
+  <a href="{{ url_for('admin.faq_new') }}" class="btn btn-primary btn-sm">
+    <i class="bi bi-plus-circle me-1"></i> Add New FAQ
+  </a>
+</div>
+
+<div class="admin-card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark-header">
+        <tr>
+          <th>Order</th>
+          <th>Question</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for faq in faqs %}
+          <tr>
+            <td class="text-light-silver small fw-bold">#{{ faq.display_order }}</td>
+            <td>
+              <div class="fw-bold text-white">{{ faq.question }}</div>
+              <div class="small text-light-silver text-truncate" style="max-width: 400px;">{{ faq.answer }}</div>
+            </td>
+            <td class="text-nowrap"><span class="badge-dark-pill">{{ faq.category }}</span></td>
+            <td class="text-nowrap">
+              {% if faq.is_published %}
+                <span class="badge bg-success">Published</span>
+              {% else %}
+                <span class="badge bg-secondary">Hidden</span>
+              {% endif %}
+            </td>
+            <td class="text-end text-nowrap">
+              <a href="{{ url_for('admin.faq_edit', id=faq.id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <form action="{{ url_for('admin.faq_delete', id=faq.id) }}" method="POST" class="d-inline delete-confirm-form" data-entity="FAQ">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center py-5 text-light-silver">No FAQs created yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

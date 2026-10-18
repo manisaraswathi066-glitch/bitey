@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Hosting & Renewal Policy — Bitetech Technologies{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <span class="badge-price mb-2 d-inline-block">Hosting Obligations & Renewals</span>
+    <h1 class="fw-bold mb-2">Hosting and Renewal Policy</h1>
+    <p class="text-muted mb-0">Clear terms regarding server hosting, domain registrations, annual renewals, and code migration rights.</p>
+  </div>
+</section>
+
+<section class="py-5 bg-light min-vh-50">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm policy-content" style="line-height: 1.8;">
+          {% if content %}
+            {{ content | e | replace('\n', '<br>') | safe }}
+          {% else %}
+            <h4>1. Website with Hosting Package Scope (₹7,000)</h4>
+            <p>For clients selecting our turnkey "Website with Hosting" package starting at ₹7,000:</p>
+            <ul>
+              <li><strong>Hosting Duration:</strong> Includes one (1) full year of shared cloud web hosting from the date of launch.</li>
+              <li><strong>Domain Registration:</strong> Includes registration assistance for one standard domain name (.com or .in) for the first year. Premium or copyrighted domains are subject to registrar surcharges.</li>
+              <li><strong>SSL Certificate:</strong> Automated Let's Encrypt SSL certificates are provisioned and renewed free of charge for HTTPS security.</li>
+            </ul>
+
+            <h4>2. Annual Renewal Schedules and Costs</h4>
+            <p>To keep the website live on public servers beyond the initial 12-month period, hosting and domain registrations must be renewed annually:</p>
+            <ul>
+              <li>Estimated ongoing renewal is <strong>₹2,500 per year</strong>, covering server storage, domain renewal, SSL maintenance, and routine security patching.</li>
+              <li>Bitetech Technologies issues renewal reminders 30 days and 7 days prior to expiry via email and WhatsApp.</li>
+            </ul>
+
+            <h4>3. Code Ownership and Migration Rights</h4>
+            <p>Clients retain 100% ownership of their website source code and database assets. If a client prefers to transfer their website to another hosting provider at the end of the term, Bitetech Technologies will provide a complete, compressed backup of the files and SQL database at no penalty fee.</p>
+
+            <h4>4. Third-Party Outages and Backups</h4>
+            <p>We maintain weekly automated offsite backups. While our upstream cloud infrastructure maintains a 99.9% uptime objective, Bitetech Technologies is not liable for scheduled upstream data center maintenance or force majeure network outages.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

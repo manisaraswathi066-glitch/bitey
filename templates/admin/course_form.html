@@ -1,0 +1,133 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ title }} — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1">{{ title }}</h2>
+    <p class="text-light-silver small mb-0">Configure course syllabus, starting fee, schedule parameters, and delivery format.</p>
+  </div>
+  <a href="{{ url_for('admin.courses') }}" class="btn btn-outline-info btn-sm text-white">
+    <i class="bi bi-arrow-left me-1"></i> Back to Courses
+  </a>
+</div>
+
+<div class="row">
+  <div class="col-lg-9">
+    <div class="admin-card p-4 p-md-5">
+      <form method="POST">
+        {{ form.csrf_token }}
+
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label fw-semibold text-white">Course Title <span class="text-danger">*</span></label>
+            {{ form.title(class="form-control", placeholder="e.g. Python Programming") }}
+            {% for err in form.title.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Level</label>
+            {{ form.level(class="form-select") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">URL Slug <span class="text-danger">*</span></label>
+            {{ form.slug(class="form-control", placeholder="e.g. python-programming") }}
+            {% for err in form.slug.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Display Fee Label <span class="text-danger">*</span></label>
+            {{ form.price(class="form-control", placeholder="e.g. ₹899") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Fee Numeric (₹ INR) <span class="text-danger">*</span></label>
+            {{ form.fee_integer(class="form-control", placeholder="899") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Duration <span class="text-danger">*</span></label>
+            {{ form.duration(class="form-control", placeholder="e.g. 4 Weeks (24 Hours)") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Delivery Mode <span class="text-danger">*</span></label>
+            {{ form.delivery_mode(class="form-select") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Enrollment Status <span class="text-danger">*</span></label>
+            {{ form.status(class="form-select") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Class Schedule <span class="text-danger">*</span></label>
+            {{ form.class_schedule(class="form-control", placeholder="e.g. Weekend & Evening Batches Available") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Teaching Format <span class="text-danger">*</span></label>
+            {{ form.teaching_format(class="form-control", placeholder="e.g. Live Screen-Share, Code Review, and Hands-on Tasks") }}
+          </div>
+
+          <div class="col-md-8">
+            <label class="form-label fw-semibold text-white">Prerequisites</label>
+            {{ form.prerequisites(class="form-control", placeholder="e.g. Basic computer literacy; no prior coding required") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Badge Text (Optional)</label>
+            {{ form.badge_text(class="form-control", placeholder="e.g. Best for Beginners, High Demand") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-white">Short Summary (Max 350 chars) <span class="text-danger">*</span></label>
+            {{ form.short_description(class="form-control", rows=2, placeholder="Overview displayed on course cards...") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-white">Module Syllabus Breakdown <span class="text-danger">*</span></label>
+            <div class="form-text text-light-silver small mb-2">Format each line as: <code class="text-cyan-glow">Module X: Title | Details description</code></div>
+            {{ form.syllabus(class="form-control", rows=8, placeholder="Module 1: Syntax & Variables | Primitive data types, casting, operators.&#10;Module 2: Flow Control | Conditionals and loops.&#10;Module 3: Functions | Scopes, parameters, return values.") }}
+            {% for err in form.syllabus.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-white">Learning Outcomes (One per line)</label>
+            {{ form.outcomes(class="form-control", rows=4, placeholder="Write idiomatic Python scripts&#10;Architect modular OOP projects&#10;Design normalized MySQL databases") }}
+          </div>
+
+          <div class="col-12 pt-3 border-top">
+            <div class="d-flex flex-wrap gap-4">
+              <div class="form-check">
+                {{ form.is_published(class="form-check-input", id="coursePublishedCheck") }}
+                <label class="form-check-label fw-semibold text-white" for="coursePublishedCheck">Publish (Visible to Visitors)</label>
+              </div>
+
+              <div class="form-check">
+                {{ form.is_featured(class="form-check-input", id="courseFeaturedCheck") }}
+                <label class="form-check-label fw-semibold text-white" for="courseFeaturedCheck">Feature on Homepage</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 mt-4 pt-2">
+            <button type="submit" class="btn btn-purple px-4 py-2 fw-semibold" id="btn-save-course-submit">
+              <i class="bi bi-save me-1"></i> Save Course Record
+            </button>
+            <a href="{{ url_for('admin.courses') }}" class="btn btn-outline-secondary text-light-silver ms-2">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

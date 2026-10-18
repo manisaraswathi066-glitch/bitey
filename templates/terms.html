@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms of Service — Bitetech Technologies{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <span class="badge-price mb-2 d-inline-block">Terms & Conditions</span>
+    <h1 class="fw-bold mb-2">Terms of Service</h1>
+    <p class="text-muted mb-0">Terms governing our Python development projects, reference implementations, and online classes.</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm policy-content" style="line-height: 1.8;">
+          {% if content %}
+            {{ content | e | replace('\n', '<br>') | safe }}
+          {% else %}
+            <h4>1. Service Agreement</h4>
+            <p>Bitetech Technologies provides software development, reference codebases, and live online tutoring in Python programming.</p>
+
+            <h4>2. Pricing and Scope</h4>
+            <p>Project pricing starts from ₹599 depending on requirements. Any customized deliverable is agreed in advance before payment and work initiation.</p>
+
+            <h4>3. Online Classes Notice</h4>
+            <p>Our courses focus exclusively on practical engineering skills and software portfolio development. We do not provide degree accreditation or guarantee employment.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

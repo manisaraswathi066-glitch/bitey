@@ -1,0 +1,171 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Site Settings & Security Policies — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1">Company Details & Defensive Settings</h2>
+    <p class="text-light-silver small mb-0">Modify company parameters, legal policy texts, and incident response posture.</p>
+  </div>
+</div>
+
+<!-- Account Security & Session Management Card -->
+<div class="admin-card p-4 mb-4" style="border-left: 4px solid var(--admin-primary);">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <div>
+      <h5 class="fw-bold mb-1 text-cyan-glow"><i class="bi bi-shield-lock-fill me-2"></i>Administrator Security & Session Control</h5>
+      <p class="small text-light-silver mb-0">
+        Active User: <strong class="text-white">{{ current_user.username }}</strong> &bull; 
+        MFA Status: 
+        {% if current_user.mfa_enabled %}
+          <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-patch-check-fill me-1"></i> TOTP Protected</span>
+        {% else %}
+          <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><i class="bi bi-exclamation-triangle-fill me-1"></i> MFA Inactive</span>
+        {% endif %}
+        &bull; Token Version: <code class="text-cyan-glow">v{{ current_user.token_version }}</code>
+      </p>
+    </div>
+
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin.setup_mfa') }}" class="btn btn-outline-info btn-sm text-white">
+        <i class="bi bi-qr-code me-1"></i> Re-configure MFA
+      </a>
+      <form action="{{ url_for('admin.revoke_all_sessions') }}" method="POST" class="d-inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Revoke all other active sessions? You will stay logged in on this browser only.');">
+          <i class="bi bi-door-closed-fill me-1"></i> Revoke All Other Sessions
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<form method="POST">
+  {{ form.csrf_token }}
+
+  <div class="row g-4">
+    <!-- Defensive Incident Response Mode -->
+    <div class="col-12">
+      <div class="admin-card p-4" style="border-left: 4px solid #f59e0b; background: rgba(245, 158, 11, 0.04);">
+        <h5 class="fw-bold mb-2 text-white"><i class="bi bi-cone-striped text-warning me-2"></i>Defensive Incident Response Mode</h5>
+        <p class="text-light-silver small mb-3">
+          In the event of an active investigation, DDoS attack, or credential incident, operators can switch the platform mode:
+        </p>
+        <div class="row align-items-center g-3">
+          <div class="col-md-6">
+            {{ form.incident_mode(class="form-select") }}
+          </div>
+          <div class="col-md-6">
+            <span class="small text-light-silver">
+              <strong class="text-white">Normal:</strong> All features active &bull; 
+              <strong class="text-white">Read-Only:</strong> Public viewing works, public write forms paused &bull; 
+              <strong class="text-white">Lockdown:</strong> Web admin login disabled.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company Contact & Brand Info -->
+    <div class="col-lg-6">
+      <div class="admin-card p-4 h-100">
+        <h5 class="fw-bold mb-3 border-bottom pb-2 text-white"><i class="bi bi-building text-cyan-glow me-2"></i>Official Company Information</h5>
+
+        <div class="mb-3">
+          <label class="form-label text-white">Company Name</label>
+          {{ form.company_name(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-white">Official Contact Email</label>
+          {{ form.company_email(class="form-control") }}
+          <div class="form-text text-light-silver small">Used for public footer, contact page, and notifications.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-white">Phone Number</label>
+          {{ form.company_phone(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-white">WhatsApp Number (with country code, no +)</label>
+          {{ form.whatsapp_number(class="form-control") }}
+          <div class="form-text text-light-silver small">e.g. <code>917418332912</code> for automatic WhatsApp chat link integration.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-white">Starting Project Price (INR)</label>
+          <div class="input-group">
+            <span class="input-group-text text-cyan-glow fw-bold">₹</span>
+            {{ form.starting_price(class="form-control") }}
+          </div>
+          <div class="form-text text-light-silver small">Standard starting price for Python mini-projects.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-white">Hero Headline</label>
+          {{ form.hero_headline(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-white">Hero Supporting Subheadline</label>
+          {{ form.hero_subheadline(class="form-control", rows=3) }}
+        </div>
+      </div>
+    </div>
+
+    <!-- About, Mission & Vision -->
+    <div class="col-lg-6">
+      <div class="admin-card p-4 h-100">
+        <h5 class="fw-bold mb-3 border-bottom pb-2 text-white"><i class="bi bi-file-text text-cyan-glow me-2"></i>About Us & Statements</h5>
+
+        <div class="mb-3">
+          <label class="form-label text-white">About Us Overview</label>
+          {{ form.about_text(class="form-control", rows=4) }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-white">Mission Statement</label>
+          {{ form.mission_text(class="form-control", rows=3) }}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-white">Vision Statement</label>
+          {{ form.vision_text(class="form-control", rows=3) }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Editable Policies -->
+    <div class="col-12">
+      <div class="admin-card p-4">
+        <h5 class="fw-bold mb-3 border-bottom pb-2 text-white"><i class="bi bi-shield-check text-cyan-glow me-2"></i>Editable Public Policies & Conditions</h5>
+
+        <div class="row g-4">
+          <div class="col-md-4">
+            <label class="form-label fw-bold text-white">Privacy Policy (Markdown / HTML)</label>
+            {{ form.privacy_policy(class="form-control", rows=10) }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold text-white">Terms of Service</label>
+            {{ form.terms_conditions(class="form-control", rows=10) }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold text-white">Refund Policy & Delivery Terms</label>
+            {{ form.refund_policy(class="form-control", rows=10) }}
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-top text-end">
+          <button type="submit" class="btn btn-primary px-4 py-2">
+            <i class="bi bi-check-circle-fill me-1"></i> Save All Site Settings & Policies
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

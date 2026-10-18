@@ -1,0 +1,140 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ title }} — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1">{{ title }}</h2>
+    <p class="text-light-silver small mb-0">Fill in the project details, problem statement, features, deliverables, and pricing below.</p>
+  </div>
+  <a href="{{ url_for('admin.projects') }}" class="btn btn-outline-info btn-sm text-white">
+    <i class="bi bi-arrow-left me-1"></i> Back to Projects
+  </a>
+</div>
+
+<div class="row">
+  <div class="col-lg-9">
+    <div class="admin-card p-4 p-md-5">
+      <form method="POST">
+        {{ form.csrf_token }}
+
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label fw-semibold text-white">Project Title <span class="text-danger">*</span></label>
+            {{ form.title(class="form-control", placeholder="e.g. Student Attendance & Grade Tracker") }}
+            {% for err in form.title.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Category</label>
+            {{ form.category_id(class="form-select") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">URL Slug <span class="text-danger">*</span></label>
+            {{ form.slug(class="form-control", placeholder="e.g. student-attendance-grade-tracker") }}
+            {% for err in form.slug.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Project Classification</label>
+            {{ form.project_type(class="form-select") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Starting Price Numeric (₹)</label>
+            {{ form.starting_price(class="form-control", placeholder="599 or 1000") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Display Price Tag</label>
+            {{ form.price_range(class="form-control", placeholder="e.g. From ₹599 or From ₹1,000") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Availability Status</label>
+            {{ form.availability_status(class="form-select") }}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Technology Stack</label>
+            {{ form.tech_stack(class="form-control", placeholder="Python 3.13, Flask, MySQL, SQLite") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-white">Short Summary (Max 350 chars) <span class="text-danger">*</span></label>
+            {{ form.short_description(class="form-control", rows=2, placeholder="Brief overview for cards and meta descriptions...") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-white">Problem Statement & Purpose</label>
+            {{ form.problem_statement(class="form-control", rows=3, placeholder="Describe the practical or academic problem this project addresses...") }}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-white">Full Architecture & Description <span class="text-danger">*</span></label>
+            {{ form.full_description(class="form-control", rows=6, placeholder="Detailed architectural breakdown, modules, and database structure...") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Key Features (One feature per line)</label>
+            {{ form.features(class="form-control", rows=4, placeholder="Automatic grade calculation&#10;CSV report generation&#10;Dual MySQL/SQLite support") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Expected Deliverables (One per line)</label>
+            {{ form.deliverables(class="form-control", rows=4, placeholder="Full Python source code&#10;Database setup script&#10;Setup walkthrough guide") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Preview Image URL (Optional)</label>
+            {{ form.image_url(class="form-control", placeholder="https://example.com/preview.png") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Live Demo / Repo Link (Optional)</label>
+            {{ form.demo_link(class="form-control", placeholder="https://github.com/... or live demo URL") }}
+          </div>
+
+          <!-- Checkboxes -->
+          <div class="col-12 pt-3 border-top">
+            <div class="d-flex flex-wrap gap-4">
+              <div class="form-check">
+                {{ form.source_code_included(class="form-check-input", id="sourceCodeCheck") }}
+                <label class="form-check-label fw-semibold text-white" for="sourceCodeCheck">Source Code Included in Offering</label>
+              </div>
+
+              <div class="form-check">
+                {{ form.is_demo(class="form-check-input", id="isDemoCheck") }}
+                <label class="form-check-label fw-semibold text-white" for="isDemoCheck">Mark as Reference Demonstration</label>
+              </div>
+
+              <div class="form-check">
+                {{ form.is_published(class="form-check-input", id="isPublishedCheck") }}
+                <label class="form-check-label fw-semibold text-white" for="isPublishedCheck">Publish (Visible to Visitors)</label>
+              </div>
+
+              <div class="form-check">
+                {{ form.is_featured(class="form-check-input", id="isFeaturedCheck") }}
+                <label class="form-check-label fw-semibold text-white" for="isFeaturedCheck">Feature on Homepage</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 mt-4 pt-2">
+            <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold" id="btn-save-project-submit">
+              <i class="bi bi-save me-1"></i> Save Project
+            </button>
+            <a href="{{ url_for('admin.projects') }}" class="btn btn-outline-secondary text-light-silver ms-2">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

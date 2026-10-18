@@ -1,0 +1,74 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Portfolio Items — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1">Portfolio & Technical References</h2>
+    <p class="text-light-silver small mb-0">Showcase software architectures and reference implementations.</p>
+  </div>
+
+  <a href="{{ url_for('admin.portfolio_new') }}" class="btn btn-primary btn-sm">
+    <i class="bi bi-plus-circle me-1"></i> Add Portfolio Item
+  </a>
+</div>
+
+<div class="admin-card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark-header">
+        <tr>
+          <th>ID</th>
+          <th>Title & Category</th>
+          <th>Technologies</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td class="text-light-silver small">#{{ item.id }}</td>
+            <td>
+              <div class="fw-bold text-white">{{ item.title }}</div>
+              <div class="small text-light-silver">{{ item.category }}</div>
+            </td>
+            <td>
+              <div class="small text-light-silver text-truncate" style="max-width: 250px;">
+                {{ item.technologies }}
+              </div>
+            </td>
+            <td class="text-nowrap"><span class="badge-dark-pill">{{ item.client_type }}</span></td>
+            <td class="text-nowrap">
+              {% if item.is_published %}
+                <span class="badge bg-success">Published</span>
+              {% else %}
+                <span class="badge bg-secondary">Hidden</span>
+              {% endif %}
+            </td>
+            <td class="text-end text-nowrap">
+              <a href="{{ url_for('admin.portfolio_edit', id=item.id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <form action="{{ url_for('admin.portfolio_delete', id=item.id) }}" method="POST" class="d-inline delete-confirm-form" data-entity="portfolio item">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-light-silver">
+              No portfolio items added yet. Click "Add Portfolio Item" to create one.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} — Bitetech Technologies Online Classes{% endblock %}
+
+{% block meta_description %}{{ course.short_description }}{% endblock %}
+
+{% block content %}
+<!-- Course Header -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-2">
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.courses') }}" class="text-decoration-none">Online Classes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ course.title }}</li>
+      </ol>
+    </nav>
+
+    <div class="row align-items-center justify-content-between g-4">
+      <div class="col-lg-8">
+        <div class="d-flex flex-wrap gap-2 mb-2">
+          <span class="badge-level">{{ course.level }}</span>
+          {% if course.badge_text %}
+            <span class="badge bg-purple-subtle text-purple border">{{ course.badge_text }}</span>
+          {% endif %}
+          <span class="badge bg-success-subtle text-success border"><i class="bi bi-broadcast me-1"></i> {{ course.delivery_mode }}</span>
+          <span class="badge bg-primary-subtle text-primary border">{{ course.status }}</span>
+        </div>
+
+        <h1 class="fw-bold mb-2">{{ course.title }}</h1>
+        <p class="lead text-muted mb-0">{{ course.short_description }}</p>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <div class="p-3 bg-light rounded-4 border d-inline-block text-start">
+          <div class="small text-muted mb-1">Proposed Course Fee:</div>
+          <div class="fs-2 fw-bold text-dark">{{ course.price }}</div>
+          <div class="small text-secondary mb-2"><i class="bi bi-clock me-1"></i> Duration: {{ course.duration }}</div>
+          <a href="#enrollment-form-section" class="btn btn-purple btn-sm w-100" id="btn-join-now-hero">
+            <i class="bi bi-mortarboard-fill me-1"></i> Join Now / Enroll
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Course Details & Enrollment Form -->
+<section class="py-5 bg-light min-vh-50">
+  <div class="container">
+    <div class="row g-5">
+      <!-- Left Column: Syllabus & Learning Outcomes -->
+      <div class="col-lg-7">
+        
+        <!-- Key Logistics Card (Configured from Admin) -->
+        <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+          <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-info-circle-fill text-primary me-2"></i> Course Details & Schedule</h5>
+          <div class="row g-3 small">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3 border">
+                <span class="text-muted d-block">Delivery Mode:</span>
+                <strong class="text-dark">{{ course.delivery_mode }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3 border">
+                <span class="text-muted d-block">Class Schedule:</span>
+                <strong class="text-dark">{{ course.class_schedule }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3 border">
+                <span class="text-muted d-block">Teaching Format:</span>
+                <strong class="text-dark">{{ course.teaching_format }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3 border">
+                <span class="text-muted d-block">Enrollment Status:</span>
+                <strong class="text-success">{{ course.status }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prerequisites -->
+        <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+          <h5 class="fw-bold mb-2 text-dark"><i class="bi bi-bookmark-check-fill text-warning me-2"></i> Prerequisites</h5>
+          <p class="text-secondary small mb-0">{{ course.prerequisites }}</p>
+        </div>
+
+        <!-- Syllabus Breakdown -->
+        <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+          <h4 class="fw-bold mb-3"><i class="bi bi-journal-code text-purple me-2"></i> Structured Syllabus Modules</h4>
+          <p class="text-muted small mb-4">
+            Curated by Bitetech Technologies to take you from foundational syntax to practical coding independence.
+          </p>
+
+          <div class="accordion accordion-flush" id="syllabusAccordion">
+            {% for mod in course.syllabus_modules() %}
+              <div class="accordion-item border rounded mb-2 overflow-hidden">
+                <h2 class="accordion-header" id="headingMod{{ loop.index }}">
+                  <button class="accordion-button collapsed py-3 fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMod{{ loop.index }}" aria-expanded="false" aria-controls="collapseMod{{ loop.index }}">
+                    {{ mod.title }}
+                  </button>
+                </h2>
+                <div id="collapseMod{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="headingMod{{ loop.index }}" data-bs-parent="#syllabusAccordion">
+                  <div class="accordion-body small text-secondary bg-light">
+                    {{ mod.detail or 'Interactive lecture, hands-on coding walkthrough, and practical programming assignment.' }}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Learning Outcomes -->
+        {% if course.outcomes_list() %}
+          <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-stars text-success me-2"></i> What You Will Learn (Outcomes)</h4>
+            <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
+              {% for outcome in course.outcomes_list() %}
+                <li class="d-flex align-items-start gap-2 small text-secondary">
+                  <i class="bi bi-check-circle-fill text-success fs-5 mt-n1"></i>
+                  <span>{{ outcome }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Right Column: Join Now / Course Registration Form -->
+      <div class="col-lg-5" id="enrollment-form-section">
+        <div class="p-4 p-md-5 rounded-4 bg-white border shadow-sm sticky-top" style="top: 90px;">
+          <div class="text-center mb-4">
+            <span class="badge-price mb-2 d-inline-block">Join This Course</span>
+            <h4 class="fw-bold">Student Enrollment Enquiry</h4>
+            <p class="text-muted small mb-0">
+              Submit your interest for <strong>{{ course.title }}</strong> ({{ course.price }}). Our course coordinator will connect with you via WhatsApp with the batch schedule.
+            </p>
+          </div>
+
+          <form action="{{ url_for('main.course_detail', slug=course.slug) }}" method="POST">
+            {{ form.csrf_token }}
+            {{ form.course_id() }}
+
+            <div style="display:none;">
+              {{ form.website_hp() }}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Your Full Name <span class="text-danger">*</span></label>
+              {{ form.student_name(class="form-control", placeholder="e.g. Priya Sharma") }}
+              {% for err in form.student_name.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">WhatsApp / Mobile Number <span class="text-danger">*</span></label>
+              {{ form.student_phone(class="form-control", placeholder="e.g. 7418332912") }}
+              {% for err in form.student_phone.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
+              {{ form.student_email(class="form-control", placeholder="priya@example.com") }}
+              {% for err in form.student_email.errors %}
+                <div class="text-danger small">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Preferred Batch Timing</label>
+              {{ form.preferred_batch(class="form-select") }}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Preferred Learning Mode</label>
+              {{ form.learning_mode(class="form-select") }}
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label small fw-semibold">Prior Experience & Goals (Optional)</label>
+              {{ form.message(class="form-control", rows=3, placeholder="Tell us if you are starting from zero, preparing for exams, or building a project...") }}
+            </div>
+
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-purple py-2 fw-semibold" id="btn-course-enroll-submit">
+                <i class="bi bi-mortarboard-fill me-1"></i> Join Now / Submit Enrollment
+              </button>
+            </div>
+          </form>
+
+          <div class="pt-3 border-top text-center">
+            <span class="small text-muted d-block mb-2">Have questions about the syllabus?</span>
+            <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20have%20questions%20about%20the%20{{ course.title|urlencode }}%20course." 
+               class="btn btn-sm btn-whatsapp w-100" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp"></i> Chat with Course Coordinator (+91 {{ site_settings.company_phone }})
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

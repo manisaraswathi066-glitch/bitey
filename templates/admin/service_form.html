@@ -1,0 +1,139 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ title }} — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1">{{ title }}</h2>
+    <p class="text-light-silver small mb-0">Configure service offering, deliverables, starting price, and hosting terms.</p>
+  </div>
+  <a href="{{ url_for('admin.services') }}" class="btn btn-outline-info btn-sm text-white">
+    <i class="bi bi-arrow-left me-1"></i> Back to Services
+  </a>
+</div>
+
+<div class="row">
+  <div class="col-lg-9">
+    <div class="admin-card p-4 p-md-5">
+      <form method="POST">
+        {{ form.csrf_token }}
+
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label fw-semibold text-white">Service Title <span class="text-danger">*</span></label>
+            {{ form.title(class="form-control", placeholder="e.g. Shop or Small Business Website") }}
+            {% for err in form.title.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">URL Slug <span class="text-danger">*</span></label>
+            {{ form.slug(class="form-control", placeholder="shop-small-business-website") }}
+            {% for err in form.slug.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Display Starting Price <span class="text-danger">*</span></label>
+            {{ form.starting_price(class="form-control", placeholder="e.g. ₹5,000 or ₹7,000") }}
+            {% for err in form.starting_price.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Price Numeric (INR) <span class="text-danger">*</span></label>
+            {{ form.price_integer(class="form-control", placeholder="5000") }}
+            {% for err in form.price_integer.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold text-white">Estimated Timeline <span class="text-danger">*</span></label>
+            {{ form.timeline(class="form-control", placeholder="e.g. 5-7 Working Days") }}
+            {% for err in form.timeline.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-white">Short Summary (Max 350 chars) <span class="text-danger">*</span></label>
+            {{ form.short_description(class="form-control", rows=2, placeholder="Brief overview for cards and meta descriptions...") }}
+            {% for err in form.short_description.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-semibold text-white">Detailed Description <span class="text-danger">*</span></label>
+            {{ form.full_description(class="form-control", rows=6, placeholder="Comprehensive description of service scope, technology stack, and process...") }}
+            {% for err in form.full_description.errors %}
+              <div class="text-danger small">{{ err }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Features Included (One per line)</label>
+            {{ form.features(class="form-control", rows=4, placeholder="Responsive design&#10;WhatsApp lead button&#10;Google Maps integration") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Expected Deliverables (One per line)</label>
+            {{ form.deliverables(class="form-control", rows=4, placeholder="Complete HTML/CSS/JS code&#10;Server deployment&#10;Admin guide") }}
+          </div>
+
+          <!-- Section: Hosting, Domain & Renewal Configuration (Prompt Section 7) -->
+          <div class="col-12 pt-3 border-top">
+            <h5 class="fw-bold text-white mb-1"><i class="bi bi-server text-cyan-glow me-2"></i> Hosting, Domain & Renewal Configuration</h5>
+            <p class="text-light-silver small">Prompt Section 7 Requirement: Explicitly configure hosting duration, domain inclusion, and renewal costs before customer confirms.</p>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Hosting Duration</label>
+            {{ form.hosting_duration(class="form-control", placeholder="e.g. 1 Year Shared Cloud Hosting or Optional / Not included") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Domain Registration Terms</label>
+            {{ form.domain_included(class="form-control", placeholder="e.g. .com / .in domain included for 1st year or Client provided") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Annual Renewal Cost</label>
+            {{ form.renewal_cost(class="form-control", placeholder="e.g. ₹2,500/year after first year") }}
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-white">Additional Charges & Add-ons</label>
+            {{ form.additional_charges(class="form-control", placeholder="e.g. Payment gateway setup ₹1,500, Extra pages ₹500/page") }}
+          </div>
+
+          <div class="col-12 pt-3 border-top">
+            <div class="d-flex gap-4">
+              <div class="form-check">
+                {{ form.is_published(class="form-check-input", id="publishedCheck") }}
+                <label class="form-check-label fw-semibold text-white" for="publishedCheck">Published (Visible to Visitors)</label>
+              </div>
+              <div class="form-check">
+                {{ form.is_featured(class="form-check-input", id="featuredCheck") }}
+                <label class="form-check-label fw-semibold text-white" for="featuredCheck">Feature on Homepage</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 mt-4 pt-2">
+            <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold" id="btn-save-service-pkg">
+              <i class="bi bi-save me-1"></i> Save Service Package
+            </button>
+            <a href="{{ url_for('admin.services') }}" class="btn btn-outline-secondary text-light-silver ms-2">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

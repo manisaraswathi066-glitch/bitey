@@ -1,0 +1,449 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Enquiries & Leads — Bitetech Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+  <div>
+    <h2 class="fw-bold text-white mb-1">Customer Leads & Enquiries</h2>
+    <p class="text-light-silver small mb-0">Review incoming project requests, service quotes, class registrations, and messages.</p>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('admin.enquiries_export') }}" class="btn btn-outline-success btn-sm">
+      <i class="bi bi-download me-1"></i> Export All Enquiries (CSV)
+    </a>
+  </div>
+</div>
+
+<!-- Tabs Navigation -->
+<div class="admin-card mb-4 p-0 overflow-hidden">
+  <ul class="nav nav-tabs px-3 pt-2 border-bottom" id="enquiryTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link {% if enquiry_type in ('all', 'projects') %}active fw-semibold{% endif %}" href="{{ url_for('admin.enquiries', type='projects') }}">
+        <i class="bi bi-kanban text-cyan-glow me-1"></i> Project Enquiries ({{ project_enquiries|length }})
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if enquiry_type == 'services' %}active fw-semibold{% endif %}" href="{{ url_for('admin.enquiries', type='services') }}">
+        <i class="bi bi-window-sidebar text-info me-1"></i> Service Quotes ({{ service_enquiries|length }})
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if enquiry_type == 'courses' %}active fw-semibold{% endif %}" href="{{ url_for('admin.enquiries', type='courses') }}">
+        <i class="bi bi-mortarboard text-purple me-1"></i> Class Registrations ({{ course_enquiries|length }})
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if enquiry_type == 'contacts' %}active fw-semibold{% endif %}" href="{{ url_for('admin.enquiries', type='contacts') }}">
+        <i class="bi bi-chat-dots text-secondary me-1"></i> Contact Desk ({{ contact_messages|length }})
+      </a>
+    </li>
+  </ul>
+
+  <div class="p-4">
+    {% if enquiry_type in ('all', 'projects') %}
+      <!-- PROJECT ENQUIRIES TABLE -->
+      <h5 class="fw-bold text-white mb-3"><i class="bi bi-kanban text-cyan-glow me-2"></i>Python Project Enquiries</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle small">
+          <thead class="table-dark-header">
+            <tr>
+              <th>ID</th>
+              <th>Client Contact</th>
+              <th>Target Project / Scope</th>
+              <th>Budget</th>
+              <th>Requirements</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pe in project_enquiries %}
+              <tr>
+                <td class="fw-bold text-muted">#{{ pe.id }}</td>
+                <td>
+                  <div class="fw-bold text-white">{{ pe.client_name }}</div>
+                  <div class="text-light-silver small"><a href="mailto:{{ pe.client_email }}" class="text-cyan-glow">{{ pe.client_email }}</a></div>
+                  <div class="text-success small"><i class="bi bi-whatsapp"></i> {{ pe.client_phone }}</div>
+                </td>
+                <td>
+                  <div class="fw-semibold text-white">{{ pe.project.title if pe.project else pe.project_type }}</div>
+                  <div class="text-muted small">{{ pe.project_type }}</div>
+                </td>
+                <td class="text-nowrap"><span class="badge badge-dark-pill">{{ pe.budget_range }}</span></td>
+                <td style="max-width: 250px;">
+                  <div class="text-truncate text-light-silver" title="{{ pe.requirements }}">{{ pe.requirements }}</div>
+                  {% if pe.admin_notes %}
+                    <div class="text-cyan-glow small mt-1"><strong>Note:</strong> {{ pe.admin_notes }}</div>
+                  {% endif %}
+                </td>
+                <td class="text-nowrap">
+                  <span class="badge {% if pe.status == 'New' %}bg-warning text-dark{% elif pe.status == 'Completed' %}bg-success{% else %}bg-primary{% endif %}">
+                    {{ pe.status }}
+                  </span>
+                </td>
+                <td class="text-light-silver text-nowrap">{{ pe.created_at.strftime('%d %b %Y') }}</td>
+                <td class="text-end text-nowrap">
+                  <div class="d-inline-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updatePeModal{{ pe.id }}" title="Update Status">
+                      <i class="bi bi-pencil-square me-1"></i>Update
+                    </button>
+                    <form method="POST" action="{{ url_for('admin.project_enquiry_delete', enquiry_id=pe.id) }}" onsubmit="return confirm('Permanently delete project enquiry #{{ pe.id }} from {{ pe.client_name }}?');" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Enquiry">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="8" class="text-center py-3 text-muted">No project enquiries found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modals for Project Enquiries (Rendered cleanly outside table) -->
+      {% for pe in project_enquiries %}
+        <div class="modal fade" id="updatePeModal{{ pe.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST" action="{{ url_for('admin.project_enquiry_status', enquiry_id=pe.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header">
+                  <h5 class="modal-title">Update Project Enquiry #{{ pe.id }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold">Status</label>
+                    <select name="status" class="form-select">
+                      <option value="New" {% if pe.status == 'New' %}selected{% endif %}>New</option>
+                      <option value="Contacted" {% if pe.status == 'Contacted' %}selected{% endif %}>Contacted</option>
+                      <option value="In Progress" {% if pe.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                      <option value="Completed" {% if pe.status == 'Completed' %}selected{% endif %}>Completed</option>
+                      <option value="Rejected" {% if pe.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold">Company Response / Note for Customer</label>
+                    <textarea name="company_response" class="form-control" rows="2" placeholder="Will be visible in Customer Dashboard...">{{ pe.company_response or '' }}</textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold">Internal Staff Notes</label>
+                    <textarea name="admin_notes" class="form-control" rows="2" placeholder="Internal tracking notes...">{{ pe.admin_notes or '' }}</textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary btn-sm">Save Status</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {% if enquiry_type == 'services' %}
+      <!-- SERVICE ENQUIRIES TABLE -->
+      <h5 class="fw-bold text-white mb-3"><i class="bi bi-window-sidebar text-info me-2"></i>Website & Service Quotations</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle small mb-0">
+          <thead class="table-dark-header">
+            <tr>
+              <th>ID</th>
+              <th>Client Contact</th>
+              <th>Project Title / Package</th>
+              <th>Budget Range</th>
+              <th>Timeline</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for se in service_enquiries %}
+              <tr>
+                <td class="fw-bold text-light-silver">#{{ se.id }}</td>
+                <td>
+                  <div class="fw-bold text-white">{{ se.client_name }}</div>
+                  <div class="text-light-silver small"><a href="mailto:{{ se.client_email }}" class="text-cyan-glow">{{ se.client_email }}</a></div>
+                  <div class="text-success small"><i class="bi bi-whatsapp"></i> {{ se.client_phone }}</div>
+                </td>
+                <td>
+                  <div class="fw-semibold text-white">{{ se.project_title }}</div>
+                  <div class="text-light-silver small">{{ se.service.title if se.service else 'General Website' }}</div>
+                </td>
+                <td class="text-nowrap"><span class="badge badge-dark-pill">{{ se.budget_range }}</span></td>
+                <td class="text-light-silver text-nowrap">{{ se.target_timeline }}</td>
+                <td class="text-nowrap">
+                  <span class="badge {% if se.status == 'New' %}bg-warning text-dark{% elif se.status == 'Completed' %}bg-success{% else %}bg-info text-dark{% endif %}">
+                    {{ se.status }}
+                  </span>
+                </td>
+                <td class="text-light-silver text-nowrap">{{ se.created_at.strftime('%d %b %Y') }}</td>
+                <td class="text-end text-nowrap">
+                  <div class="d-inline-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateSeModal{{ se.id }}" title="Update Status">
+                      <i class="bi bi-pencil-square me-1"></i>Update
+                    </button>
+                    <form method="POST" action="{{ url_for('admin.service_enquiry_delete', enquiry_id=se.id) }}" onsubmit="return confirm('Permanently delete service quotation enquiry #{{ se.id }} from {{ se.client_name }}?');" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Enquiry">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="8" class="text-center py-3 text-light-silver">No service enquiries found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modals for Service Enquiries (Rendered cleanly outside table) -->
+      {% for se in service_enquiries %}
+        <div class="modal fade" id="updateSeModal{{ se.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST" action="{{ url_for('admin.service_enquiry_status', enquiry_id=se.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header">
+                  <h5 class="modal-title text-white">Update Service Enquiry #{{ se.id }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold text-white">Status</label>
+                    <select name="status" class="form-select">
+                      <option value="New" {% if se.status == 'New' %}selected{% endif %}>New</option>
+                      <option value="Contacted" {% if se.status == 'Contacted' %}selected{% endif %}>Contacted / Proposal Sent</option>
+                      <option value="In Progress" {% if se.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                      <option value="Completed" {% if se.status == 'Completed' %}selected{% endif %}>Completed / Delivered</option>
+                      <option value="Rejected" {% if se.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold text-white">Proposal / Note for Customer</label>
+                    <textarea name="company_response" class="form-control" rows="2">{{ se.company_response or '' }}</textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold text-white">Internal Notes</label>
+                    <textarea name="admin_notes" class="form-control" rows="2">{{ se.admin_notes or '' }}</textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary btn-sm">Save Status</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {% if enquiry_type == 'courses' %}
+      <!-- COURSE REGISTRATIONS TABLE -->
+      <h5 class="fw-bold text-white mb-3"><i class="bi bi-mortarboard text-purple me-2"></i>Online Class Registrations</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle small mb-0">
+          <thead class="table-dark-header">
+            <tr>
+              <th>ID</th>
+              <th>Student Contact</th>
+              <th>Course Selected</th>
+              <th>Batch</th>
+              <th>Mode</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ce in course_enquiries %}
+              <tr>
+                <td class="fw-bold text-light-silver">#{{ ce.id }}</td>
+                <td>
+                  <div class="fw-bold text-white">{{ ce.student_name }}</div>
+                  <div class="text-light-silver small"><a href="mailto:{{ ce.student_email }}" class="text-cyan-glow">{{ ce.student_email }}</a></div>
+                  <div class="text-success small"><i class="bi bi-whatsapp"></i> {{ ce.student_phone }}</div>
+                </td>
+                <td>
+                  <div class="fw-semibold text-white">{{ ce.course.title if ce.course else 'General Interest' }}</div>
+                  <div class="text-light-silver small">{{ ce.course.price if ce.course else '' }}</div>
+                </td>
+                <td class="text-light-silver text-nowrap">{{ ce.preferred_batch }}</td>
+                <td class="text-nowrap"><span class="badge bg-purple-subtle text-purple border">{{ ce.learning_mode }}</span></td>
+                <td class="text-nowrap">
+                  <span class="badge {% if ce.status == 'New' %}bg-warning text-dark{% elif ce.status == 'Completed' %}bg-success{% else %}bg-primary{% endif %}">
+                    {{ ce.status }}
+                  </span>
+                </td>
+                <td class="text-light-silver text-nowrap">{{ ce.created_at.strftime('%d %b %Y') }}</td>
+                <td class="text-end text-nowrap">
+                  <div class="d-inline-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateCeModal{{ ce.id }}" title="Update Status">
+                      <i class="bi bi-pencil-square me-1"></i>Update
+                    </button>
+                    <form method="POST" action="{{ url_for('admin.course_enquiry_delete', enquiry_id=ce.id) }}" onsubmit="return confirm('Permanently delete course registration #{{ ce.id }} for {{ ce.student_name }}?');" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Registration">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="8" class="text-center py-3 text-light-silver">No class registrations found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modals for Course Enquiries (Rendered cleanly outside table) -->
+      {% for ce in course_enquiries %}
+        <div class="modal fade" id="updateCeModal{{ ce.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST" action="{{ url_for('admin.course_enquiry_status', enquiry_id=ce.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header">
+                  <h5 class="modal-title text-white">Update Course Registration #{{ ce.id }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold text-white">Status</label>
+                    <select name="status" class="form-select">
+                      <option value="New" {% if ce.status == 'New' %}selected{% endif %}>New</option>
+                      <option value="Contacted" {% if ce.status == 'Contacted' %}selected{% endif %}>Contacted / Batch Confirmed</option>
+                      <option value="In Progress" {% if ce.status == 'In Progress' %}selected{% endif %}>In Progress / Attending</option>
+                      <option value="Completed" {% if ce.status == 'Completed' %}selected{% endif %}>Completed</option>
+                      <option value="Rejected" {% if ce.status == 'Rejected' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold text-white">Coordinator Update for Student</label>
+                    <textarea name="company_response" class="form-control" rows="2">{{ ce.company_response or '' }}</textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold text-white">Internal Notes</label>
+                    <textarea name="admin_notes" class="form-control" rows="2">{{ ce.admin_notes or '' }}</textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary btn-sm">Save Status</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {% if enquiry_type == 'contacts' %}
+      <!-- CONTACT DESK TABLE -->
+      <h5 class="fw-bold text-white mb-3"><i class="bi bi-chat-dots text-cyan-glow me-2"></i>Contact Desk Messages</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle small mb-0">
+          <thead class="table-dark-header">
+            <tr>
+              <th>ID</th>
+              <th>Contact Info</th>
+              <th>Subject</th>
+              <th>Service</th>
+              <th>Message</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cm in contact_messages %}
+              <tr>
+                <td class="fw-bold text-light-silver">#{{ cm.id }}</td>
+                <td>
+                  <div class="fw-bold text-white">{{ cm.name }}</div>
+                  <div class="text-light-silver small"><a href="mailto:{{ cm.email }}" class="text-cyan-glow">{{ cm.email }}</a></div>
+                  <div class="text-success small"><i class="bi bi-whatsapp"></i> {{ cm.phone }}</div>
+                </td>
+                <td class="fw-semibold text-white">{{ cm.subject }}</td>
+                <td class="text-light-silver">{{ cm.service }}</td>
+                <td style="max-width: 250px;"><div class="text-truncate text-light-silver" title="{{ cm.message }}">{{ cm.message }}</div></td>
+                <td class="text-nowrap">
+                  <span class="badge {% if cm.status == 'New' %}bg-warning text-dark{% elif cm.status == 'Completed' %}bg-success{% else %}bg-secondary{% endif %}">
+                    {{ cm.status }}
+                  </span>
+                </td>
+                <td class="text-light-silver text-nowrap">{{ cm.created_at.strftime('%d %b %Y') }}</td>
+                <td class="text-end text-nowrap">
+                  <div class="d-inline-flex align-items-center gap-1">
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateCmModal{{ cm.id }}" title="Update Status">
+                      <i class="bi bi-pencil-square me-1"></i>Update
+                    </button>
+                    <form method="POST" action="{{ url_for('admin.contact_message_delete', msg_id=cm.id) }}" onsubmit="return confirm('Permanently delete contact message #{{ cm.id }} from {{ cm.name }}?');" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Message">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="8" class="text-center py-3 text-light-silver">No contact messages found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modals for Contact Messages (Rendered cleanly outside table) -->
+      {% for cm in contact_messages %}
+        <div class="modal fade" id="updateCmModal{{ cm.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST" action="{{ url_for('admin.contact_message_status', msg_id=cm.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header">
+                  <h5 class="modal-title text-white">Update Contact Message #{{ cm.id }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold text-white">Status</label>
+                    <select name="status" class="form-select">
+                      <option value="New" {% if cm.status == 'New' %}selected{% endif %}>New</option>
+                      <option value="Contacted" {% if cm.status == 'Contacted' %}selected{% endif %}>Contacted / Responded</option>
+                      <option value="In Progress" {% if cm.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                      <option value="Completed" {% if cm.status == 'Completed' %}selected{% endif %}>Completed</option>
+                      <option value="Rejected" {% if cm.status == 'Rejected' %}selected{% endif %}>Closed / Spam</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold text-white">Internal Staff Notes</label>
+                    <textarea name="admin_notes" class="form-control" rows="2">{{ cm.admin_notes or '' }}</textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary btn-sm">Save Status</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

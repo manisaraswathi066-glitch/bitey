@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Portfolio & Engineering References — Bitetech Technologies{% endblock %}
+
+{% block meta_description %}Explore our database-driven portfolio of Python applications, Flask web portals, automation tools, and reference architectures.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <div class="row align-items-center justify-content-between g-4">
+      <div class="col-lg-8">
+        <span class="badge-price mb-2 d-inline-block">Technical Showcase</span>
+        <h1 class="fw-bold mb-2">Portfolio & Architecture References</h1>
+        <p class="lead text-muted mb-0">
+          A database-driven collection of software architectures, dynamic web applications, and database tools engineered by Bitetech Technologies.
+        </p>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <a href="{{ url_for('main.contact') }}" class="btn btn-primary">
+          <i class="bi bi-code-slash"></i> Build a Similar Project
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Portfolio Grid -->
+<section class="py-5">
+  <div class="container py-4">
+    {% if categories %}
+      <div class="filter-bar d-flex flex-wrap align-items-center gap-2 mb-4">
+        <span class="small fw-bold text-dark me-2"><i class="bi bi-layers"></i> Categories:</span>
+        <span class="badge-tech">All Categories</span>
+        {% for cat in categories %}
+          <span class="badge bg-light text-dark border">{{ cat }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if items %}
+      <div class="row g-4">
+        {% for item in items %}
+          <div class="col-lg-4 col-md-6">
+            <div class="bezel-outer h-100">
+              <div class="bezel-inner">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="badge-price">{{ item.category }}</span>
+                  <span class="small text-muted"><i class="bi bi-tag me-1"></i> {{ item.client_type }}</span>
+                </div>
+
+                <h4 class="fw-bold fs-5 mb-2">{{ item.title }}</h4>
+                <p class="text-muted small mb-3 flex-grow-1">{{ item.description }}</p>
+
+                <!-- Feature Highlights -->
+                {% if item.feature_list() %}
+                  <div class="bg-light p-3 rounded-3 mb-3 border">
+                    <div class="small fw-bold text-dark mb-1">Key Highlights:</div>
+                    <ul class="list-unstyled mb-0 small text-secondary">
+                      {% for feat in item.feature_list()[:3] %}
+                        <li class="mb-1 text-truncate"><i class="bi bi-check2 text-success me-1"></i> {{ feat }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+
+                <!-- Tech Badges -->
+                <div class="d-flex flex-wrap gap-1 mb-3">
+                  {% for tech in item.tech_list() %}
+                    <span class="badge-tech">{{ tech }}</span>
+                  {% endfor %}
+                </div>
+
+                <div class="pt-3 border-top d-flex justify-content-between align-items-center mt-auto">
+                  {% if item.live_url and item.live_url != '#' %}
+                    <a href="{{ item.live_url }}" class="btn btn-sm btn-outline-navy" target="_blank" rel="noopener">
+                      <i class="bi bi-box-arrow-up-right"></i> View Demo
+                    </a>
+                  {% else %}
+                    <span class="small text-muted"><i class="bi bi-check-circle text-success me-1"></i> Verified Architecture</span>
+                  {% endif %}
+                  <a href="{{ url_for('main.contact') }}" class="btn btn-sm btn-primary">
+                    Inquire &rarr;
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5 bg-white rounded-4 border p-5">
+        <i class="bi bi-collection fs-1 text-muted mb-3 d-block"></i>
+        <h4 class="fw-bold mb-2">No Portfolio Items Published Yet</h4>
+        <p class="text-muted mx-auto mb-4" style="max-width: 500px;">
+          Portfolio entries managed from the admin dashboard will appear dynamically here.
+        </p>
+        <a href="{{ url_for('main.contact') }}" class="btn btn-primary">Inquire About Our Projects</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

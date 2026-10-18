@@ -1,0 +1,493 @@
+{% extends 'base.html' %}
+
+{% block title %}Bitetech Technologies — Python Projects, Websites & Online Programming Classes{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" id="hero">
+  <div class="container py-4">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="hero-pill mb-0">
+            <span class="pulse-indicator">
+              <span class="ping-circle"></span>
+              <span class="dot-circle"></span>
+            </span>
+            <span>Verified Python Code &bull; Mini ₹599 &bull; Major ₹1,000</span>
+          </div>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small d-none d-sm-inline-flex align-items-center gap-1">
+            <i class="bi bi-patch-check-fill text-success"></i> 24h Express Delivery
+          </span>
+        </div>
+        
+        <h1 class="hero-title">
+          <span class="hero-gradient-text">{{ site_settings.hero_headline or 'Turning Python Ideas into Working Code' }}</span>
+        </h1>
+        
+        <p class="hero-subtitle">
+          Bitetech Technologies develops reliable Python software, full-stack websites, and relational database systems. Learn to code through our structured online classes or get ready-to-run mini-projects with complete source code.
+        </p>
+
+        <!-- CTA Buttons with Button-in-Button Architecture -->
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20am%20interested%20in%20a%20Python%20project/website." class="btn btn-whatsapp btn-nested-pill" id="hero-btn-whatsapp" target="_blank" rel="noopener">
+            <span>Chat on WhatsApp</span>
+            <span class="btn-nested-icon"><i class="bi bi-whatsapp"></i></span>
+          </a>
+          <a href="#instant-estimator" class="btn btn-primary btn-nested-pill" id="hero-btn-estimator">
+            <span>Calculate Price & Order</span>
+            <span class="btn-nested-icon"><i class="bi bi-calculator-fill"></i></span>
+          </a>
+          <a href="{{ url_for('main.projects') }}" class="btn btn-outline-navy" id="hero-btn-explore">
+            <i class="bi bi-grid-fill me-1"></i> Browse Catalog
+          </a>
+        </div>
+
+        <!-- Bento Stat Cards -->
+        <div class="row g-3 pt-2">
+          <div class="col-6 col-sm-3">
+            <div class="hero-stat-card">
+              <div class="hero-stat-number text-success">₹599</div>
+              <div class="hero-stat-label">Mini Projects from</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="hero-stat-card">
+              <div class="hero-stat-number text-primary">₹1,000</div>
+              <div class="hero-stat-label">Major Projects from</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="hero-stat-card">
+              <div class="hero-stat-number text-info">₹5,000</div>
+              <div class="hero-stat-label">Websites from</div>
+            </div>
+          </div>
+          <div class="col-6 col-sm-3">
+            <div class="hero-stat-card">
+              <div class="hero-stat-number text-dark">100%</div>
+              <div class="hero-stat-label">Verified Codebases</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual Terminal Graphic with Official Logo -->
+      <div class="col-lg-5">
+        <div class="hero-graphic-card">
+          <div class="hero-terminal-header">
+            <div class="terminal-dots">
+              <span class="terminal-dot red"></span>
+              <span class="terminal-dot yellow"></span>
+              <span class="terminal-dot green"></span>
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <img src="{{ url_for('static', filename='images/bitetech_emblem.png') }}" alt="Bitetech Logo" style="width: 16px; height: 16px;">
+              <span class="terminal-title">bitetech_runner.py &mdash; Python 3.13</span>
+            </div>
+            <div class="small text-success"><i class="bi bi-shield-check"></i> Verified</div>
+          </div>
+          <div class="hero-code-body">
+            <div class="code-comment"># BITETECH TECHNOLOGIES ARCHITECTURE</div>
+            <div><span class="code-keyword">from</span> bitetech <span class="code-keyword">import</span> Engine, Deliverable</div>
+            <div><span class="code-keyword">from</span> models <span class="code-keyword">import</span> Project, Website, Course</div>
+            <br>
+            <div>app = <span class="code-fn">Engine</span>(brand=<span class="code-str">'Bitetech'</span>)</div>
+            <div>app.tagline = <span class="code-str">'Where Ideas Become Innovation'</span></div>
+            <br>
+            <div><span class="code-keyword">def</span> <span class="code-fn">deliver_solution</span>(topic, baseline_price=<span class="code-num">599</span>):</div>
+            <div class="ms-3 code-comment">"""Turn requirements into clean, tested code"""</div>
+            <div class="ms-3">project = Project(scope=topic, starting_at=baseline_price)</div>
+            <div class="ms-3"><span class="code-keyword">return</span> project.<span class="code-fn">provide_source_and_video_demo</span>()</div>
+            <br>
+            <div class="text-success"><i class="bi bi-check2-circle"></i> [OK] 100% Tested Python Codebases Delivered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Creative Interactive Project Estimator & 1-Click WhatsApp Ordering -->
+<section class="py-5" id="instant-estimator">
+  <div class="container py-2">
+    <div class="estimator-wrapper">
+      <div class="row align-items-center mb-4">
+        <div class="col-lg-8">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 fw-bold">Instant Pricing Calculator</span>
+            <span class="small text-muted">&bull; Direct Engineering Quotation</span>
+          </div>
+          <h2 class="fw-bold mb-1 text-white">Select Your Deliverable & Get Instant Quote</h2>
+          <p class="text-secondary small mb-0">Choose your project category below to view transparent pricing, turnaround schedule, and order instantly over WhatsApp.</p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+          <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20need%20a%20custom%20project%20quote." class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener">
+            <i class="bi bi-chat-quote-fill me-1"></i> Custom Requirements?
+          </a>
+        </div>
+      </div>
+
+      <!-- Interactive Selector Tabs -->
+      <div class="estimator-nav">
+        <button type="button" class="estimator-pill-btn active" data-type="mini">
+          <i class="bi bi-code-slash text-success"></i> Python Mini Project (₹599)
+        </button>
+        <button type="button" class="estimator-pill-btn" data-type="major">
+          <i class="bi bi-layers-fill text-primary"></i> Python Major Project (₹1,000)
+        </button>
+        <button type="button" class="estimator-pill-btn" data-type="website">
+          <i class="bi bi-window-sidebar text-info"></i> Shop Website (₹5,000)
+        </button>
+        <button type="button" class="estimator-pill-btn" data-type="hosting">
+          <i class="bi bi-hdd-network text-warning"></i> Website + 1-Yr Hosting (₹7,000)
+        </button>
+      </div>
+
+      <!-- Dynamic Output Card -->
+      <div class="estimator-content-card">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-7">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge bg-primary-subtle text-primary border px-2 py-1" id="estimatorBadge">Academic Mini Project</span>
+              <span class="estimator-delivery-badge" id="estimatorTimeline"><i class="bi bi-lightning-charge-fill"></i> Delivered in 24 Hours</span>
+            </div>
+            <div class="estimator-price-tag mb-2" id="estimatorPrice">₹599</div>
+            <p class="text-secondary small mb-3" id="estimatorDesc">
+              Ideal for college semester submissions, lab examinations, and practical viva demonstrations. Delivered with clean source code and setup guide.
+            </p>
+            <ul class="feature-checklist small text-secondary mb-0" id="estimatorFeaturesList">
+              <li><i class="bi bi-check2-circle text-emerald me-2"></i> Complete bug-free Python source code (GUI/Tkinter or CLI)</li>
+              <li><i class="bi bi-check2-circle text-emerald me-2"></i> Pre-recorded video demonstration showing working output</li>
+              <li><i class="bi bi-check2-circle text-emerald me-2"></i> Step-by-step installation instructions & dependency guide</li>
+              <li><i class="bi bi-check2-circle text-emerald me-2"></i> Academic Viva Voce Q&A cheat sheet included</li>
+            </ul>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="p-3 rounded-3 bg-card border border-light text-center">
+              <div class="text-white fw-bold mb-1"><i class="bi bi-shield-check text-success me-1"></i> 100% Risk-Free Guarantee</div>
+              <p class="text-secondary small mb-3">Live video demo shown before you transfer any payment. Full guidance till your project runs on your PC.</p>
+              <div class="d-flex flex-column gap-2">
+                <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20would%20like%20to%20order%20a%20Python%20Mini%20Project%20starting%20at%20₹599." 
+                   class="btn btn-whatsapp w-100 py-2 fw-bold" 
+                   id="estimatorWaBtn" 
+                   data-phone="{{ site_settings.company_phone }}"
+                   target="_blank" 
+                   rel="noopener">
+                  <i class="bi bi-whatsapp"></i> Order this on WhatsApp &rarr;
+                </a>
+                <a href="#contact-section" class="btn btn-outline-navy w-100 btn-sm" id="estimatorFormBtn">
+                  <i class="bi bi-envelope-paper me-1"></i> Send Requirements Online
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Website Development Services Section (Prompt Section 7) -->
+<section class="py-5 bg-light" id="website-services">
+  <div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+      <div>
+        <span class="badge-price mb-2 d-inline-block">Starting Prices</span>
+        <h2 class="fw-bold mb-1">Website Development Services</h2>
+        <p class="text-muted mb-0">Professional business websites with transparent baseline pricing and full hosting terms.</p>
+      </div>
+      <a href="{{ url_for('main.services') }}" class="btn btn-outline-navy btn-sm">
+        Explore All Services <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="row g-4">
+      <!-- Service 1: Shop or Small Business Website (₹5,000) -->
+      <div class="col-lg-6">
+        <div class="bezel-outer h-100">
+          <div class="bezel-inner">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="badge bg-primary-subtle text-primary border px-3 py-2 fw-semibold">5-7 Working Days</span>
+              <span class="badge-price fs-6">Starts at ₹5,000</span>
+            </div>
+            <h3 class="fw-bold mb-2">Shop or Small Business Website</h3>
+            <p class="text-secondary small mb-3 flex-grow-1" style="line-height: 1.7;">
+              Designed for retail shops, service providers, and startups. Includes responsive mobile layouts, catalog showcase, Google Maps location, and instant WhatsApp lead capture.
+            </p>
+            <div class="p-3 bg-light rounded-3 border mb-3 small">
+              <div class="fw-bold text-dark mb-1"><i class="bi bi-check2 text-success me-1"></i> Key Features:</div>
+              <ul class="list-unstyled mb-0 text-secondary">
+                <li>&bull; Up to 5 custom-designed responsive pages</li>
+                <li>&bull; WhatsApp chat button & lead inquiry forms</li>
+                <li>&bull; Fast loading speed with clean HTML5/CSS3/Bootstrap</li>
+              </ul>
+            </div>
+            <div class="small text-muted mb-4 p-2 bg-light rounded border">
+              <i class="bi bi-info-circle me-1 text-primary"></i> Hosting is optional / client-provided in this baseline package.
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+              <a href="{{ url_for('main.service_detail', slug='shop-small-business-website') }}" class="btn btn-outline-primary btn-sm">
+                View Deliverables &rarr;
+              </a>
+              <a href="{{ url_for('main.service_detail', slug='shop-small-business-website') }}#quote-form-section" class="btn btn-primary btn-sm">
+                Request Quote
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service 2: Website with Hosting (₹7,000) -->
+      <div class="col-lg-6">
+        <div class="bezel-outer featured h-100">
+          <div class="bezel-inner">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="badge bg-success-subtle text-success border px-3 py-2 fw-semibold">All-Inclusive Launch</span>
+              <span class="badge-price fs-6">Starts at ₹7,000</span>
+            </div>
+            <h3 class="fw-bold mb-2">Website with Hosting & Domain</h3>
+            <p class="text-secondary small mb-3 flex-grow-1" style="line-height: 1.7;">
+              Complete turnkey web package. Includes responsive website development, initial 1-year shared cloud hosting, domain registration assistance (.com/.in), and free SSL certificate.
+            </p>
+            <div class="p-3 bg-light rounded-3 border mb-3 small">
+              <div class="fw-bold text-dark mb-1"><i class="bi bi-check2 text-success me-1"></i> Transparent Package Inclusions:</div>
+              <ul class="list-unstyled mb-0 text-secondary">
+                <li>&bull; 1 Year Shared Cloud Hosting included</li>
+                <li>&bull; Assistance with 1st-year .com or .in domain registration</li>
+                <li>&bull; Free SSL HTTPS certificate & business email setup</li>
+                <li>&bull; Annual renewal estimated at ₹2,500/year after year 1</li>
+              </ul>
+            </div>
+            <div class="small text-muted mb-4 p-2 bg-light rounded border">
+              <i class="bi bi-shield-check me-1 text-success"></i> Full code ownership & database backups provided to client.
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+              <a href="{{ url_for('main.service_detail', slug='website-with-hosting') }}" class="btn btn-outline-primary btn-sm">
+                View Deliverables &rarr;
+              </a>
+              <a href="{{ url_for('main.service_detail', slug='website-with-hosting') }}#quote-form-section" class="btn btn-primary btn-sm">
+                Request Quote
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Python Project Catalogue Section (Prompt Section 6) -->
+<section class="py-5 bg-white border-top border-bottom" id="featured-projects">
+  <div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+      <div>
+        <span class="badge-price mb-2 d-inline-block">Tested & Verified Codebases</span>
+        <h2 class="fw-bold mb-1">Python Project Catalogue</h2>
+        <p class="text-muted mb-0">Mini Projects starting from ₹599 and Major Projects starting from ₹1,000.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('main.projects', type='Mini') }}" class="btn btn-sm btn-outline-success">
+          Mini Projects (₹599)
+        </a>
+        <a href="{{ url_for('main.projects', type='Major') }}" class="btn btn-sm btn-outline-primary">
+          Major Projects (₹1,000)
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {% for project in featured_projects[:6] %}
+        <div class="col-lg-4 col-md-6">
+          <div class="bezel-outer h-100">
+            <div class="bezel-inner">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                {% if project.project_type == 'Mini' %}
+                  <span class="badge-mini">
+                    Mini Project (₹599)
+                  </span>
+                {% else %}
+                  <span class="badge-major">
+                    Major Project (₹1,000)
+                  </span>
+                {% endif %}
+                <span class="badge-price">{{ project.price_range }}</span>
+              </div>
+
+              <h5 class="fw-bold mb-2">
+                <a href="{{ url_for('main.project_detail', slug=project.slug) }}" class="text-dark text-decoration-none">
+                  {{ project.title }}
+                </a>
+              </h5>
+
+              <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.6;">
+                {{ project.short_description }}
+              </p>
+
+              <div class="d-flex flex-wrap gap-1 mb-3">
+                {% for tech in project.tech_list()[:3] %}
+                  <span class="badge-tech">{{ tech }}</span>
+                {% endfor %}
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+                <span class="small text-muted">
+                  <i class="bi bi-check2 text-success"></i> Full Code
+                </span>
+                <a href="{{ url_for('main.project_detail', slug=project.slug) }}" class="btn btn-sm btn-outline-navy">
+                  View Project &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Online Classes & Courses Section (Prompt Section 8) -->
+<section class="py-5 bg-light" id="online-classes">
+  <div class="container py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+      <div>
+        <span class="badge-price mb-2 d-inline-block">Live Interactive Mentoring</span>
+        <h2 class="fw-bold mb-1">Online Programming Education</h2>
+        <p class="text-muted mb-0">Learn to code with live screen-share sessions and hands-on capstone projects.</p>
+      </div>
+      <a href="{{ url_for('main.courses') }}" class="btn btn-purple btn-sm">
+        View All Courses &rarr;
+      </a>
+    </div>
+
+    <div class="row g-4">
+      {% for course in courses[:4] %}
+        <div class="col-lg-6">
+          <div class="bezel-outer h-100">
+            <div class="bezel-inner">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <span class="badge-level me-1">{{ course.level }}</span>
+                  <span class="badge bg-purple-subtle text-purple border">{{ course.delivery_mode }}</span>
+                </div>
+                <span class="fs-4 fw-bold text-dark font-display">{{ course.price }}</span>
+              </div>
+              
+              <h4 class="fw-bold mb-2">
+                <a href="{{ url_for('main.course_detail', slug=course.slug) }}" class="text-dark text-decoration-none">
+                  {{ course.title }}
+                </a>
+              </h4>
+
+              <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.6;">
+                {{ course.short_description }}
+              </p>
+
+              <div class="p-2 rounded bg-light-subtle border small text-muted mb-3">
+                <i class="bi bi-clock me-1"></i> {{ course.duration }} &bull; <i class="bi bi-calendar-check ms-1 me-1"></i> {{ course.class_schedule }}
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+                <span class="small text-muted">Weekend & Evening Batches</span>
+                <a href="{{ url_for('main.course_detail', slug=course.slug) }}" class="btn btn-sm btn-outline-navy">
+                  View Syllabus & Enroll &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Quick Project Quotation & Contact Form Section -->
+<section class="py-5 bg-white border-top" id="contact-section">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="p-4 p-md-5 rounded-4 bg-light border shadow-sm">
+          <div class="text-center mb-4">
+            <span class="badge-price mb-2 d-inline-block">Direct Engineering Support</span>
+            <h3 class="fw-bold">Request a Project Quotation or Consultation</h3>
+            <p class="text-muted small mx-auto" style="max-width: 550px;">
+              Tell us what software, Python project, or website you need. We review technical specifications and provide transparent upfront pricing.
+            </p>
+          </div>
+
+          <form action="{{ url_for('main.contact') }}" method="POST">
+            {{ contact_form.csrf_token }}
+
+            <div style="display:none;">
+              {{ contact_form.website_hp() }}
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Your Full Name <span class="text-danger">*</span></label>
+                {{ contact_form.name(class="form-control", placeholder="e.g. Aman Verma") }}
+                {% for err in contact_form.name.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">WhatsApp / Phone Number <span class="text-danger">*</span></label>
+                {{ contact_form.phone(class="form-control", placeholder="e.g. 7418332912") }}
+                {% for err in contact_form.phone.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
+                {{ contact_form.email(class="form-control", placeholder="name@example.com") }}
+                {% for err in contact_form.email.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Service Required</label>
+                {{ contact_form.service(class="form-select") }}
+              </div>
+
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Project Title / Topic <span class="text-danger">*</span></label>
+                {{ contact_form.subject(class="form-control", placeholder="e.g. Hospital Appointment System or Retail Shop Website") }}
+                {% for err in contact_form.subject.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Detailed Requirements & Deadlines <span class="text-danger">*</span></label>
+                {{ contact_form.message(class="form-control", rows=4, placeholder="Describe the required modules, features, and target completion date...") }}
+                {% for err in contact_form.message.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" id="btn-home-contact-submit">
+                  <i class="bi bi-send-check-fill me-1"></i> Submit Requirements for Free Analysis
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="mt-4 pt-3 border-top text-center">
+            <span class="small text-muted me-2">Need immediate assistance?</span>
+            <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20have%20an%20enquiry." 
+               class="btn btn-sm btn-whatsapp" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp"></i> Chat on WhatsApp (+91 {{ site_settings.company_phone }})
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

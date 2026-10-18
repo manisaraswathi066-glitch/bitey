@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Register Customer Account — Bitetech Technologies{% endblock %}
+
+{% block content %}
+<section class="py-5 auth-section min-vh-100 d-flex align-items-center">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card auth-card border-0 rounded-4 overflow-hidden shadow-lg">
+          <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 text-center">
+            <div class="brand-icon-box mx-auto mb-2 p-2 rounded-3 auth-emblem-badge">
+              <i class="bi bi-person-plus-fill fs-4 text-cyan-glow"></i>
+            </div>
+            <h3 class="fw-bold text-white mb-1">Create Customer Account</h3>
+            <p class="text-light-silver small">Register to track your Python project requests, website quotes, and online class registrations in one place.</p>
+          </div>
+
+          <div class="card-body p-4 pt-2">
+            <form method="POST" action="{{ url_for('main.register') }}">
+              {{ form.csrf_token }}
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold text-white">Full Name <span class="text-danger">*</span></label>
+                  {{ form.full_name(class="form-control py-2", placeholder="e.g. Priya Sharma", autofocus=True) }}
+                  {% for err in form.full_name.errors %}
+                    <div class="text-danger small mt-1">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold text-white">Phone / WhatsApp Number <span class="text-danger">*</span></label>
+                  {{ form.phone(class="form-control py-2", placeholder="e.g. 9812345678") }}
+                  {% for err in form.phone.errors %}
+                    <div class="text-danger small mt-1">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label small fw-semibold text-white">Email Address <span class="text-danger">*</span></label>
+                  {{ form.email(class="form-control py-2", placeholder="priya@example.com") }}
+                  {% for err in form.email.errors %}
+                    <div class="text-danger small mt-1">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label small fw-semibold text-white">Username <span class="text-danger">*</span></label>
+                  {{ form.username(class="form-control py-2", placeholder="Choose a unique username") }}
+                  {% for err in form.username.errors %}
+                    <div class="text-danger small mt-1">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold text-white">Password (Min. 8 chars) <span class="text-danger">*</span></label>
+                  {{ form.password(class="form-control py-2", placeholder="Create secure password") }}
+                  {% for err in form.password.errors %}
+                    <div class="text-danger small mt-1">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold text-white">Confirm Password <span class="text-danger">*</span></label>
+                  {{ form.confirm_password(class="form-control py-2", placeholder="Re-enter password") }}
+                  {% for err in form.confirm_password.errors %}
+                    <div class="text-danger small mt-1">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-12 pt-2">
+                  <div class="form-check">
+                    {{ form.agree_terms(class="form-check-input", id="agreeTermsCheck") }}
+                    <label class="form-check-label small text-light-silver" for="agreeTermsCheck">
+                      I agree to the <a href="{{ url_for('main.terms') }}" target="_blank" class="text-cyan-glow">Terms & Conditions</a> and <a href="{{ url_for('main.privacy_policy') }}" target="_blank" class="text-cyan-glow">Privacy Policy</a>.
+                    </label>
+                    {% for err in form.agree_terms.errors %}
+                      <div class="text-danger small mt-1">{{ err }}</div>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <div class="col-12 mt-4">
+                  <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold btn-auth-submit" id="btn-customer-register-submit">
+                    <i class="bi bi-person-check-fill me-1"></i> Register Account
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <div class="text-center pt-3 mt-3 border-top border-secondary border-opacity-25">
+              <span class="text-light-silver small">Already registered? </span>
+              <a href="{{ url_for('main.login') }}" class="fw-semibold text-cyan-glow text-decoration-none">
+                Sign In to your account &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

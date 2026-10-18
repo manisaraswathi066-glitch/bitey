@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Bitetech Technologies — Instant Quotes & Engineering Desk{% endblock %}
+
+{% block meta_description %}Get in touch with Bitetech Technologies. Official Email: bitetechtechnologies@gmail.com, Phone: 7418332912, or WhatsApp us directly for Python project quotes, custom websites, and class admissions.{% endblock %}
+
+{% block content %}
+<!-- Page Header with Official Brand Emblem -->
+<section class="hero-section py-5">
+  <div class="container py-3">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="brand-emblem-box" style="width: 38px; height: 38px;">
+            <img src="{{ url_for('static', filename='images/bitetech_emblem.png') }}" alt="Bitetech Logo" class="brand-emblem-img">
+          </div>
+          <span class="badge-price mb-0">Direct Engineering Hotline</span>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small">
+            <span class="pulse-indicator me-1"><span class="ping-circle"></span><span class="dot-circle"></span></span> Online &bull; &lt;15m Response
+          </span>
+        </div>
+        <h1 class="hero-title mb-2">Let's Build Something Exceptional</h1>
+        <p class="hero-subtitle mb-0">
+          Have an idea for a Python software project, need academic project guidance starting from ₹{{ site_settings.starting_price }}, or want a high-converting website? Connect directly with our lead developers.
+        </p>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <div class="p-3 rounded-4 bg-card border border-light d-inline-block text-start shadow-lg">
+          <div class="small text-muted text-uppercase fw-bold mb-1"><i class="bi bi-clock-history text-cyan-glow me-1"></i> Response Guarantee</div>
+          <div class="text-white fw-bold fs-6">Instant replies on WhatsApp</div>
+          <div class="text-secondary small mt-1">Mon &ndash; Sat: 9 AM &ndash; 8 PM IST</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form & Info Grid -->
+<section class="py-5">
+  <div class="container py-3">
+    <div class="row g-5">
+      <!-- Contact Details & Direct Channels -->
+      <div class="col-lg-5">
+        <h3 class="fw-bold mb-3 text-white">Direct Communication Channels</h3>
+        <p class="text-secondary mb-4">
+          Feel free to reach out via WhatsApp, phone, or email. We provide prompt, transparent quotations with zero hidden charges.
+        </p>
+
+        <!-- Channel Cards -->
+        <div class="vstack gap-3 mb-4">
+          <!-- WhatsApp Card -->
+          <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20have%20an%20enquiry." 
+             class="p-3 rounded-3 border d-flex align-items-center gap-3 text-decoration-none" 
+             style="background: rgba(37, 211, 102, 0.08); border-color: rgba(37, 211, 102, 0.35) !important;"
+             target="_blank" rel="noopener">
+            <div class="card-icon-box mb-0 flex-shrink-0" style="background: rgba(37, 211, 102, 0.2); color: #25D366; border-color: rgba(37, 211, 102, 0.4);">
+              <i class="bi bi-whatsapp"></i>
+            </div>
+            <div>
+              <div class="small fw-bold text-uppercase" style="color: #25D366;">Instant WhatsApp Desk (Fastest)</div>
+              <div class="fw-bold fs-6 text-white">+91 {{ site_settings.company_phone }} <span class="badge bg-success-subtle text-success ms-1">Click to Chat</span></div>
+            </div>
+          </a>
+
+          <!-- Phone Card -->
+          <a href="tel:{{ site_settings.company_phone }}" class="p-3 bg-card rounded-3 border d-flex align-items-center gap-3 text-decoration-none">
+            <div class="card-icon-box mb-0 flex-shrink-0">
+              <i class="bi bi-telephone-fill"></i>
+            </div>
+            <div>
+              <div class="small text-muted fw-bold text-uppercase">Direct Phone Support</div>
+              <div class="fw-bold fs-6 text-white">+91 {{ site_settings.company_phone }}</div>
+            </div>
+          </a>
+
+          <!-- Email Card -->
+          <a href="mailto:{{ site_settings.company_email }}" class="p-3 bg-card rounded-3 border d-flex align-items-center gap-3 text-decoration-none">
+            <div class="card-icon-box mb-0 flex-shrink-0">
+              <i class="bi bi-envelope-at-fill"></i>
+            </div>
+            <div>
+              <div class="small text-muted fw-bold text-uppercase">Official Administrative Email</div>
+              <div class="fw-bold fs-6 text-white text-break">{{ site_settings.company_email }}</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Why Clients Choose Bitetech Trust Matrix -->
+        <div class="p-4 rounded-4 bg-card border border-light shadow-sm mb-4">
+          <h5 class="fw-bold mb-3 text-white"><i class="bi bi-patch-check-fill text-cyan-glow me-2"></i> Why Choose Bitetech</h5>
+          <ul class="feature-checklist small text-secondary mb-0">
+            <li><i class="bi bi-check2-circle text-emerald me-2"></i> <strong>100% Working Code:</strong> Every project is tested before delivery.</li>
+            <li><i class="bi bi-check2-circle text-emerald me-2"></i> <strong>Live Screen Demo:</strong> We demonstrate working features before final payment.</li>
+            <li><i class="bi bi-check2-circle text-emerald me-2"></i> <strong>Documentation & Viva Guide:</strong> Complete project report and synopsis included.</li>
+            <li><i class="bi bi-check2-circle text-emerald me-2"></i> <strong>Free Remote Setup:</strong> We help set up Python, MySQL, and dependencies on your PC.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Main Contact Form -->
+      <div class="col-lg-7">
+        <div class="bezel-outer">
+          <div class="bezel-inner">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h3 class="fw-bold mb-1 text-white">Send Technical Requirements</h3>
+                <p class="text-secondary small mb-0">
+                  Fill out the scope below. Our lead software engineer will review and respond with an exact proposal.
+                </p>
+              </div>
+              <div class="brand-emblem-box d-none d-sm-flex" style="width: 36px; height: 36px;">
+                <img src="{{ url_for('static', filename='images/bitetech_emblem.png') }}" alt="Logo" class="brand-emblem-img">
+              </div>
+            </div>
+
+            <form action="{{ url_for('main.contact') }}" method="POST">
+              {{ form.csrf_token }}
+
+              <!-- Anti-spam Honeypot -->
+              <div style="display:none;">
+                {{ form.website_hp() }}
+              </div>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                  {{ form.name(class="form-control", placeholder="e.g. Aman Verma") }}
+                  {% for err in form.name.errors %}
+                    <div class="text-danger small">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Phone / WhatsApp <span class="text-danger">*</span></label>
+                  {{ form.phone(class="form-control", placeholder="e.g. 7418332912") }}
+                  {% for err in form.phone.errors %}
+                    <div class="text-danger small">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                  {{ form.email(class="form-control", placeholder="name@example.com") }}
+                  {% for err in form.email.errors %}
+                    <div class="text-danger small">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Service Type</label>
+                  {{ form.service(class="form-select") }}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Estimated Budget</label>
+                  {{ form.budget(class="form-select") }}
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Subject / Topic <span class="text-danger">*</span></label>
+                  {{ form.subject(class="form-control", placeholder="e.g. Inquiry regarding Python Flask Billing System") }}
+                  {% for err in form.subject.errors %}
+                    <div class="text-danger small">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Detailed Message / Deliverables <span class="text-danger">*</span></label>
+                  {{ form.message(class="form-control", rows=4, placeholder="Please describe required modules, target deadline, and specific features...") }}
+                  {% for err in form.message.errors %}
+                    <div class="text-danger small">{{ err }}</div>
+                  {% endfor %}
+                </div>
+
+                <div class="col-12 mt-4">
+                  <button type="submit" class="btn btn-primary w-100 py-2 fs-6 fw-bold" id="btn-contact-submit">
+                    <i class="bi bi-send-check-fill me-1"></i> Submit Requirements for Free Analysis
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

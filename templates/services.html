@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block title %}Website Development Services & Pricing — Bitetech Technologies{% endblock %}
+
+{% block meta_description %}Professional website development services starting from ₹5,000 for shop and small business websites, and ₹7,000 for complete websites with hosting.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <div class="row align-items-center justify-content-between g-4">
+      <div class="col-lg-8">
+        <span class="badge-price mb-2 d-inline-block">Modern Web & Software Engineering</span>
+        <h1 class="fw-bold mb-2">Website Development Services & Pricing</h1>
+        <p class="lead text-muted mb-0">
+          Professional, responsive websites and software solutions for small businesses, retail shops, and startups. Transparent Indian Rupee (₹) starting prices with zero hidden costs.
+        </p>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <a href="#quote-calculator" class="btn btn-primary" id="btn-request-quote-hero">
+          <i class="bi bi-file-earmark-check me-1"></i> Request Custom Quote
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Transparency Banner -->
+<div class="bg-light border-bottom py-2">
+  <div class="container">
+    <div class="d-flex align-items-center gap-2 small text-muted">
+      <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+      <span><strong>Pricing Transparency Notice:</strong> The rates displayed below represent baseline starting prices for typical project scopes, not fixed maximums. The final quotation is custom-tailored based on your approved technical specifications and deliverables.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Primary Service Packages Grid -->
+<section class="py-5">
+  <div class="container py-2">
+    <div class="row g-4">
+      {% for s in services %}
+        <div class="col-lg-6">
+          <div class="bezel-outer {% if s.slug == 'website-with-hosting' %}featured{% endif %} h-100">
+            <div class="bezel-inner">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <span class="badge bg-primary-subtle text-primary border px-3 py-2 fw-semibold">
+                  {{ s.timeline }}
+                </span>
+                <span class="badge-price fs-6">Starts at {{ s.starting_price }}</span>
+              </div>
+
+              <h3 class="fw-bold mb-2 text-dark">
+                <a href="{{ url_for('main.service_detail', slug=s.slug) }}" class="text-dark text-decoration-none">
+                  {{ s.title }}
+                </a>
+              </h3>
+
+              <p class="text-secondary small mb-3 flex-grow-1" style="line-height: 1.7;">
+                {{ s.short_description }}
+              </p>
+
+              <!-- Key Inclusions -->
+              {% if s.feature_list() %}
+                <div class="bg-light p-3 rounded-3 mb-3 border">
+                  <div class="small fw-bold text-dark mb-2">
+                    <i class="bi bi-check2-circle text-success me-1"></i> Key Features Included:
+                  </div>
+                  <ul class="list-unstyled mb-0 small text-secondary d-flex flex-column gap-1">
+                    {% for feat in s.feature_list()[:3] %}
+                      <li class="d-flex align-items-start gap-1">
+                        <i class="bi bi-check2 text-success mt-1"></i>
+                        <span>{{ feat }}</span>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              <!-- Hosting Disclosure Summary -->
+              <div class="mb-4 small text-muted p-2 rounded bg-light-subtle border">
+                <i class="bi bi-server text-primary me-1"></i>
+                <strong>Hosting & Domain:</strong> {{ s.hosting_duration or 'Configured per project requirements' }}
+              </div>
+
+              <div class="d-flex flex-wrap gap-2 align-items-center mt-auto pt-3 border-top">
+                <a href="{{ url_for('main.service_detail', slug=s.slug) }}" class="btn btn-outline-primary btn-sm">
+                  View Full Deliverables & Pricing &rarr;
+                </a>
+                <a href="{{ url_for('main.service_detail', slug=s.slug) }}#quote-form-section" class="btn btn-primary btn-sm ms-auto">
+                  Request Proposal
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Custom Quotation Form Section -->
+<section class="py-5 bg-white border-top" id="quote-calculator">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="p-4 p-md-5 rounded-4 bg-light border shadow-sm">
+          <div class="text-center mb-4">
+            <span class="badge-price mb-2 d-inline-block">Tailored Proposals</span>
+            <h3 class="fw-bold">Request a Tailored Project Quotation</h3>
+            <p class="text-muted small mx-auto" style="max-width: 550px;">
+              Tell us what you want to build. We will review your technical requirements, confirm feasibility, and send you a fixed-price proposal with no surprise add-ons.
+            </p>
+          </div>
+
+          <form action="{{ url_for('main.contact') }}" method="POST">
+            {{ form.csrf_token }}
+
+            <!-- Anti-spam Honeypot -->
+            <div style="display:none;">
+              {{ form.website_hp() }}
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Your Full Name <span class="text-danger">*</span></label>
+                {{ form.client_name(class="form-control", placeholder="e.g. Aman Verma") }}
+                {% for err in form.client_name.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">WhatsApp / Phone Number <span class="text-danger">*</span></label>
+                {{ form.client_phone(class="form-control", placeholder="e.g. 7418332912") }}
+                {% for err in form.client_phone.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
+                {{ form.client_email(class="form-control", placeholder="name@example.com") }}
+                {% for err in form.client_email.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Business or Project Name <span class="text-danger">*</span></label>
+                {{ form.project_title(class="form-control", placeholder="e.g. Verma Electronics Store") }}
+                {% for err in form.project_title.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Budget Expectation</label>
+                {{ form.budget_range(class="form-select") }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Target Timeline</label>
+                {{ form.target_timeline(class="form-control", placeholder="e.g. 1-2 Weeks") }}
+              </div>
+
+              <div class="col-12">
+                <label class="form-label small fw-semibold">Detailed Requirements & Scope <span class="text-danger">*</span></label>
+                {{ form.project_requirements(class="form-control", rows=4, placeholder="Describe required pages, features (WhatsApp order button, product gallery, contact forms), domain/hosting needs, and any reference websites...") }}
+                {% for err in form.project_requirements.errors %}
+                  <div class="text-danger small">{{ err }}</div>
+                {% endfor %}
+              </div>
+
+              <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" id="btn-submit-service-quote">
+                  <i class="bi bi-file-earmark-check me-1"></i> Submit Requirements for Upfront Quotation
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="mt-4 pt-3 border-top text-center">
+            <span class="small text-muted me-2">Prefer instant discussion?</span>
+            <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20would%20like%20a%20website%20quotation." 
+               class="btn btn-sm btn-whatsapp" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp"></i> Chat on WhatsApp (+91 {{ site_settings.company_phone }})
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

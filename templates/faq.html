@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Frequently Asked Questions — Bitetech Technologies{% endblock %}
+
+{% block meta_description %}Find answers to frequently asked questions about Bitetech Technologies' Python mini-projects starting from ₹599, online programming classes, and delivery terms.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-white border-bottom">
+  <div class="container py-3">
+    <div class="row align-items-center justify-content-between g-4">
+      <div class="col-lg-8">
+        <span class="badge-price mb-2 d-inline-block">Help & Clarity</span>
+        <h1 class="fw-bold mb-2">Frequently Asked Questions</h1>
+        <p class="lead text-muted mb-0">
+          Find transparent answers about our Python projects, course structures, pricing, and project delivery support.
+        </p>
+      </div>
+
+      <div class="col-lg-4 text-lg-end">
+        <a href="{{ url_for('main.contact') }}" class="btn btn-outline-navy">
+          <i class="bi bi-question-circle"></i> Have Another Question?
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Accordion & Category Filter Section -->
+<section class="py-5">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <!-- Category Filter Tabs -->
+        <div class="filter-bar d-flex flex-wrap align-items-center gap-2 mb-4">
+          <span class="small fw-bold text-dark me-2"><i class="bi bi-funnel"></i> Category:</span>
+          <a href="{{ url_for('main.faq') }}" class="filter-btn {% if not selected_cat %}active{% endif %}">
+            All Questions
+          </a>
+          {% for cat in categories %}
+            <a href="{{ url_for('main.faq', cat=cat) }}" class="filter-btn {% if selected_cat == cat %}active{% endif %}">
+              {{ cat }}
+            </a>
+          {% endfor %}
+        </div>
+
+        <!-- Accordion -->
+        {% if faqs %}
+          <div class="accordion" id="mainFaqAccordion">
+            {% for faq in faqs %}
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="heading-{{ faq.id }}">
+                  <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ faq.id }}" aria-expanded="{% if loop.first %}true{% else %}false{% endif %}" aria-controls="collapse-{{ faq.id }}">
+                    <span class="badge bg-secondary-subtle text-secondary me-2 small">{{ faq.category }}</span>
+                    {{ faq.question }}
+                  </button>
+                </h2>
+                <div id="collapse-{{ faq.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="heading-{{ faq.id }}" data-bs-parent="#mainFaqAccordion">
+                  <div class="accordion-body">
+                    {{ faq.answer }}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-5 bg-white rounded-4 border p-5">
+            <h5 class="fw-bold text-muted">No FAQs found in this category.</h5>
+            <a href="{{ url_for('main.faq') }}" class="btn btn-sm btn-outline-navy mt-2">View All Categories</a>
+          </div>
+        {% endif %}
+
+        <!-- Direct Assistance Banner -->
+        <div class="p-4 rounded-4 bg-white border shadow-sm mt-5 text-center">
+          <h4 class="fw-bold mb-2">Still Have Questions?</h4>
+          <p class="text-muted small mx-auto mb-3" style="max-width: 500px;">
+            Our team is happy to discuss your specific technical requirements, academic deadlines, or batch schedules.
+          </p>
+          <div class="d-flex justify-content-center gap-3">
+            <a href="mailto:{{ site_settings.company_email }}" class="btn btn-outline-navy btn-sm">
+              <i class="bi bi-envelope"></i> Email: {{ site_settings.company_email }}
+            </a>
+            <a href="https://wa.me/{{ site_settings.whatsapp_number }}?text=Hello%20Bitetech%20Technologies,%20I%20have%20a%20question." class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp"></i> WhatsApp: +91 {{ site_settings.company_phone }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
