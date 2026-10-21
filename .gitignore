@@ -12,6 +12,7 @@ ENV/
 # Instance and SQLite database files
 instance/
 *.db
+!seed_data.db
 *.sqlite
 *.sqlite3
 

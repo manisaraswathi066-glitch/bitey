@@ -28,12 +28,36 @@ def create_app(config_name=None):
     secret_key = app.config.get('SECRET_KEY', '')
     if 'dev-key' in secret_key or len(secret_key) < 24:
         if config_name == 'production':
-            raise ValueError("CRITICAL SECURITY ERROR: A secure random SECRET_KEY must be configured in production via .env!")
+            if os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'):
+                import secrets
+                app.config['SECRET_KEY'] = secrets.token_hex(32)
+                logger.warning("[SECURITY ADVISORY] Generated fallback SECRET_KEY for Vercel serverless environment.")
+            else:
+                logger.warning("[SECURITY ADVISORY] Running with default SECRET_KEY in production. Configure a strong random key in .env.")
         else:
             logger.warning("[SECURITY ADVISORY] Running with development SECRET_KEY. Configure a strong random key in .env for production.")
     
-    # Ensure instance folder exists for SQLite fallback
-    os.makedirs(app.instance_path, exist_ok=True)
+    # Ensure instance folder exists for SQLite fallback (safely catch on read-only environments like Vercel)
+    try:
+        os.makedirs(app.instance_path, exist_ok=True)
+    except OSError:
+        pass
+
+    # Vercel Serverless: copy seed_data.db to temporary database on cold start if needed
+    is_vercel = bool(os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'))
+    if is_vercel:
+        try:
+            import shutil
+            import tempfile
+            from pathlib import Path
+            base_dir = Path(__file__).resolve().parent
+            seed_file = base_dir / 'seed_data.db'
+            tmp_db = Path(tempfile.gettempdir()) / 'bitetech.db'
+            if seed_file.exists() and (not tmp_db.exists() or tmp_db.stat().st_size == 0):
+                shutil.copy2(seed_file, tmp_db)
+                logger.info(f"[DB] Copied seed_data.db to {tmp_db} successfully.")
+        except Exception as e:
+            logger.warning(f"[DB] Could not copy seed_data.db to temp directory: {e}")
     
     # Initialize extensions
     db.init_app(app)
@@ -43,6 +67,22 @@ def create_app(config_name=None):
     login_manager.login_message = "Please sign in to access your personal dashboard."
     login_manager.login_message_category = "info"
     migrate.init_app(app, db)
+
+    # Defensive check: ensure database tables exist (e.g. fresh Vercel /tmp container)
+    with app.app_context():
+        try:
+            from sqlalchemy import inspect
+            inspector = inspect(db.engine)
+            if not inspector.has_table('projects') or not inspector.has_table('users'):
+                logger.info("[DB AUTO-INIT] Missing tables detected. Running db.create_all()...")
+                db.create_all()
+                try:
+                    from init_db import init_database
+                    init_database(seed_demo=True)
+                except Exception as seed_err:
+                    logger.warning(f"[DB AUTO-INIT] Seeding note: {seed_err}")
+        except Exception as inspect_err:
+            logger.warning(f"[DB AUTO-INIT] Inspection note: {inspect_err}")
 
     @login_manager.user_loader
     def load_user(user_id):

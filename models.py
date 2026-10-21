@@ -397,8 +397,11 @@ class SiteSetting(db.Model):
 
     @classmethod
     def get_setting(cls, key, default=''):
-        item = cls.query.filter_by(key=key).first()
-        return item.value if item and item.value is not None else default
+        try:
+            item = cls.query.filter_by(key=key).first()
+            return item.value if item and item.value is not None else default
+        except Exception:
+            return default
 
     @classmethod
     def set_setting(cls, key, value, description=None):

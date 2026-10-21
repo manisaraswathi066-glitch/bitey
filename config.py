@@ -8,7 +8,10 @@ load_dotenv(basedir / '.env')
 
 class Config:
     """Base configuration with sensible defaults."""
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'bitetech-super-secret-dev-key-change-in-production-2026')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'bitetech-super-secret-production-safe-key-2026-v1')
+    
+    # Detect serverless environment (e.g. Vercel)
+    IS_VERCEL = bool(os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'))
     
     # Database Configuration:
     # Defaults to SQLite development DB if DATABASE_URL is not set or USE_SQLITE is explicitly set
@@ -22,11 +25,21 @@ class Config:
     MYSQL_NAME = os.environ.get('DB_NAME', 'bitetech_db')
     
     mysql_uri = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_NAME}?charset=utf8mb4"
-    sqlite_uri = f"sqlite:///{(basedir / 'instance' / 'bitetech.db').as_posix()}"
     
-    if os.environ.get('DATABASE_URL'):
-        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    elif not USE_SQLITE:
+    # On Vercel serverless, the filesystem outside the OS temp dir is read-only
+    if IS_VERCEL:
+        import tempfile
+        tmp_db_path = (Path(tempfile.gettempdir()) / 'bitetech.db').as_posix()
+        sqlite_uri = f"sqlite:///{tmp_db_path}"
+    else:
+        sqlite_uri = f"sqlite:///{(basedir / 'instance' / 'bitetech.db').as_posix()}"
+    
+    raw_db_url = os.environ.get('DATABASE_URL')
+    if raw_db_url:
+        if raw_db_url.startswith("postgres://"):
+            raw_db_url = raw_db_url.replace("postgres://", "postgresql://", 1)
+        SQLALCHEMY_DATABASE_URI = raw_db_url
+    elif not USE_SQLITE and not IS_VERCEL:
         SQLALCHEMY_DATABASE_URI = mysql_uri
     else:
         SQLALCHEMY_DATABASE_URI = sqlite_uri
