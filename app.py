@@ -19,19 +19,28 @@ logger = logging.getLogger('bitetech')
 class VercelPathFixMiddleware:
     """
     Ensures Vercel edge rewrite paths correctly match Flask endpoints:
-    1. Reads HTTP_X_MATCHED_PATH injected by Vercel's proxy.
+    1. Extracts real path from HTTP_X_MATCHED_PATH, REQUEST_URI, or PATH_INFO.
     2. Maps /api/index.py, /api/index, or /api directly to the root /.
     """
     def __init__(self, wsgi_app):
         self.wsgi_app = wsgi_app
 
     def __call__(self, environ, start_response):
-        path = environ.get('PATH_INFO', '')
         matched = environ.get('HTTP_X_MATCHED_PATH')
+        req_uri = environ.get('REQUEST_URI') or environ.get('RAW_URI')
+        
         if matched and matched not in ('/api/index.py', '/api/index', '/api'):
             environ['PATH_INFO'] = matched
-        elif path in ('/api/index.py', '/api/index', '/api'):
+        elif req_uri:
+            from urllib.parse import urlparse
+            parsed_path = urlparse(req_uri).path
+            if parsed_path not in ('/api/index.py', '/api/index', '/api'):
+                environ['PATH_INFO'] = parsed_path
+            else:
+                environ['PATH_INFO'] = '/'
+        elif environ.get('PATH_INFO') in ('/api/index.py', '/api/index', '/api'):
             environ['PATH_INFO'] = '/'
+            
         return self.wsgi_app(environ, start_response)
 
 def create_app(config_name=None):
@@ -112,6 +121,17 @@ def create_app(config_name=None):
     # Reverse Proxy Support: Safely interpret X-Forwarded headers when behind reverse proxy
     if os.environ.get('BEHIND_REVERSE_PROXY', 'False').lower() in ('true', '1'):
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+    
+    # Static file serving via WhiteNoise (Vercel serverless fallback & high-performance edge streaming)
+    try:
+        from whitenoise import WhiteNoise
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        static_dir = os.path.join(base_dir, 'static')
+        if not os.path.exists(static_dir):
+            static_dir = os.path.join(base_dir, 'public', 'static')
+        app.wsgi_app = WhiteNoise(app.wsgi_app, root=static_dir, prefix='static/')
+    except Exception as e:
+        logger.warning(f"[STATIC] WhiteNoise setup notice: {e}")
     
     # Vercel Serverless Path Normalization Middleware
     app.wsgi_app = VercelPathFixMiddleware(app.wsgi_app)

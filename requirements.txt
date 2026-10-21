@@ -35,3 +35,6 @@ Mako==1.4.3
 
 # Image Processing
 Pillow==13.0.0
+
+# Static File Serving (Vercel Serverless / Production)
+whitenoise==6.12.0
