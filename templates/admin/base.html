@@ -53,7 +53,7 @@
         </li>
 
         <li class="admin-nav-item">
-          <a href="{{ url_for('admin.projects') }}" class="admin-nav-link {% if 'project' in request.endpoint %}active{% endif %}">
+          <a href="{{ url_for('admin.projects') }}" class="admin-nav-link {% if request.endpoint and 'project' in request.endpoint %}active{% endif %}">
             <i class="bi bi-grid-fill"></i>
             <span>Python Projects</span>
           </a>
@@ -67,35 +67,35 @@
         </li>
 
         <li class="admin-nav-item">
-          <a href="{{ url_for('admin.services') }}" class="admin-nav-link {% if 'service' in request.endpoint %}active{% endif %}">
+          <a href="{{ url_for('admin.services') }}" class="admin-nav-link {% if request.endpoint and 'service' in request.endpoint %}active{% endif %}">
             <i class="bi bi-window-sidebar"></i>
             <span>Services & Pricing</span>
           </a>
         </li>
 
         <li class="admin-nav-item">
-          <a href="{{ url_for('admin.courses') }}" class="admin-nav-link {% if 'course' in request.endpoint %}active{% endif %}">
+          <a href="{{ url_for('admin.courses') }}" class="admin-nav-link {% if request.endpoint and 'course' in request.endpoint %}active{% endif %}">
             <i class="bi bi-mortarboard-fill"></i>
             <span>Online Classes</span>
           </a>
         </li>
 
         <li class="admin-nav-item">
-          <a href="{{ url_for('admin.customers') }}" class="admin-nav-link {% if 'customer' in request.endpoint %}active{% endif %}">
+          <a href="{{ url_for('admin.customers') }}" class="admin-nav-link {% if request.endpoint and 'customer' in request.endpoint %}active{% endif %}">
             <i class="bi bi-people-fill"></i>
             <span>Customers & Students</span>
           </a>
         </li>
 
         <li class="admin-nav-item">
-          <a href="{{ url_for('admin.portfolio') }}" class="admin-nav-link {% if 'portfolio' in request.endpoint %}active{% endif %}">
+          <a href="{{ url_for('admin.portfolio') }}" class="admin-nav-link {% if request.endpoint and 'portfolio' in request.endpoint %}active{% endif %}">
             <i class="bi bi-collection-fill"></i>
             <span>Portfolio</span>
           </a>
         </li>
 
         <li class="admin-nav-item">
-          <a href="{{ url_for('admin.faqs') }}" class="admin-nav-link {% if 'faq' in request.endpoint %}active{% endif %}">
+          <a href="{{ url_for('admin.faqs') }}" class="admin-nav-link {% if request.endpoint and 'faq' in request.endpoint %}active{% endif %}">
             <i class="bi bi-patch-question-fill"></i>
             <span>FAQs</span>
           </a>

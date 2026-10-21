@@ -16,6 +16,24 @@ logging.basicConfig(
 )
 logger = logging.getLogger('bitetech')
 
+class VercelPathFixMiddleware:
+    """
+    Ensures Vercel edge rewrite paths correctly match Flask endpoints:
+    1. Reads HTTP_X_MATCHED_PATH injected by Vercel's proxy.
+    2. Maps /api/index.py, /api/index, or /api directly to the root /.
+    """
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        path = environ.get('PATH_INFO', '')
+        matched = environ.get('HTTP_X_MATCHED_PATH')
+        if matched and matched not in ('/api/index.py', '/api/index', '/api'):
+            environ['PATH_INFO'] = matched
+        elif path in ('/api/index.py', '/api/index', '/api'):
+            environ['PATH_INFO'] = '/'
+        return self.wsgi_app(environ, start_response)
+
 def create_app(config_name=None):
     if not config_name:
         config_name = os.environ.get('FLASK_ENV', 'development')
@@ -94,6 +112,9 @@ def create_app(config_name=None):
     # Reverse Proxy Support: Safely interpret X-Forwarded headers when behind reverse proxy
     if os.environ.get('BEHIND_REVERSE_PROXY', 'False').lower() in ('true', '1'):
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+    
+    # Vercel Serverless Path Normalization Middleware
+    app.wsgi_app = VercelPathFixMiddleware(app.wsgi_app)
     
     # Register blueprints
     app.register_blueprint(main_bp)

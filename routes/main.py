@@ -40,6 +40,8 @@ def check_form_security():
 # ---------------------------------------------------------------------------
 
 @main_bp.route('/')
+@main_bp.route('/api/index.py')
+@main_bp.route('/api/index')
 def index():
     mini_projects = Project.query.filter_by(is_published=True, project_type='Mini').order_by(Project.is_featured.desc(), Project.created_at.desc()).limit(3).all()
     major_projects = Project.query.filter_by(is_published=True, project_type='Major').order_by(Project.is_featured.desc(), Project.created_at.desc()).limit(3).all()
